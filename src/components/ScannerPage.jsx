@@ -146,19 +146,20 @@ function ScannerPage() {
                 </motion.div>
             )}
 
-            {/* Legal Footer Links */}
-            <div className="mt-8 flex justify-center items-center gap-3 text-[10px] sm:text-xs text-white/40 w-full text-center px-2 whitespace-nowrap overflow-x-auto no-scrollbar">
-                <button onClick={() => setActiveModal('contact')} className="hover:text-white transition-colors flex-shrink-0">Contact Us</button>
-                <span>•</span>
-                <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors flex-shrink-0">Privacy Policy</button>
-                <span>•</span>
-                <button onClick={() => setActiveModal('refund')} className="hover:text-white transition-colors flex-shrink-0">Cancellations & Refunds</button>
-                <span>•</span>
-                <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors flex-shrink-0">Terms & Conditions</button>
-            </div>
-
-            <footer className="fixed bottom-2 left-0 right-0 text-center text-white/10 text-[10px] pointer-events-none z-10">
-                Flux Secure Scanner
+            {/* Footer with Legal Links */}
+            <footer className="mt-auto flex flex-col items-center gap-4 w-full pb-6 z-10">
+                <div className="flex justify-center items-center gap-3 text-[10px] sm:text-xs text-white/40 w-full text-center px-4 whitespace-nowrap overflow-x-auto no-scrollbar">
+                    <button onClick={() => setActiveModal('contact')} className="hover:text-white transition-colors flex-shrink-0">Contact Us</button>
+                    <span>•</span>
+                    <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors flex-shrink-0">Privacy Policy</button>
+                    <span>•</span>
+                    <button onClick={() => setActiveModal('refund')} className="hover:text-white transition-colors flex-shrink-0">Cancellations & Refunds</button>
+                    <span>•</span>
+                    <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors flex-shrink-0">Terms & Conditions</button>
+                </div>
+                <div className="text-center text-white/10 text-[10px] pointer-events-none">
+                    Flux Secure Scanner
+                </div>
             </footer>
 
             {/* Modal Overlay */}
