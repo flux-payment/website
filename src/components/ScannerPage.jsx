@@ -149,15 +149,15 @@ function ScannerPage() {
             </div>
 
             {/* Footer with Legal Links */}
-            <footer className="mt-auto flex flex-col items-center gap-4 w-full pb-6 z-10">
-                <div className="flex justify-center items-center gap-3 text-[10px] sm:text-xs text-white/40 w-full text-center px-4 whitespace-nowrap overflow-x-auto no-scrollbar">
-                    <button onClick={() => setActiveModal('contact')} className="hover:text-white transition-colors flex-shrink-0">Contact Us</button>
-                    <span>•</span>
-                    <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors flex-shrink-0">Privacy Policy</button>
-                    <span>•</span>
-                    <button onClick={() => setActiveModal('refund')} className="hover:text-white transition-colors flex-shrink-0">Cancellations & Refunds</button>
-                    <span>•</span>
-                    <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors flex-shrink-0">Terms & Conditions</button>
+            <footer className="mt-auto flex flex-col items-center gap-4 w-full pb-6 z-10 px-4">
+                <div className="grid grid-cols-2 gap-y-2 gap-x-1 w-full max-w-xs sm:flex sm:max-w-none sm:justify-center sm:gap-3 text-[10px] sm:text-xs text-white/40 text-center">
+                    <button onClick={() => setActiveModal('contact')} className="hover:text-white transition-colors">Contact Us</button>
+                    <span className="hidden sm:inline">•</span>
+                    <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors">Privacy Policy</button>
+                    <span className="hidden sm:inline">•</span>
+                    <button onClick={() => setActiveModal('refund')} className="hover:text-white transition-colors">Cancellations & Refunds</button>
+                    <span className="hidden sm:inline">•</span>
+                    <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors">Terms & Conditions</button>
                 </div>
                 <div className="text-center text-white/10 text-[10px] pointer-events-none">
                     Flux Secure Scanner
