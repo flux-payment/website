@@ -363,17 +363,66 @@ export default function LandingPage() {
             </section>
 
             {/* FOOTER */}
-            <footer className="py-12 border-t border-white/5 bg-black text-center text-gray-500 text-sm">
-                <p>© 2026 Flux Payment Technologies. All rights reserved.</p>
-                <p className="mt-2 text-gray-600">
+            {/* FOOTER */}
+            <footer className="mt-auto flex flex-col items-center gap-4 w-full pb-6 z-10 px-4 pt-12 border-t border-white/5 bg-black">
+                <p className="text-gray-500 text-sm">© 2026 Flux Payment Technologies. All rights reserved.</p>
+                <p className="text-gray-600 text-sm">
                     <a href="mailto:paywithfluxtech@gmail.com" className="hover:text-flux-primary transition-colors">paywithfluxtech@gmail.com</a>
                 </p>
-                <div className="flex justify-center gap-6 mt-4">
-                    <a href="#" className="hover:text-white transition-colors">Privacy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms</a>
-                    <a href="#" className="hover:text-white transition-colors">Twitter</a>
+
+                <div className="flex flex-wrap justify-center gap-x-2 gap-y-2 text-xs text-white/40">
+                    <button onClick={() => setActiveModal('contact')} className="hover:text-white transition-colors">Contact Us</button>
+                    <span className="hidden sm:inline">•</span>
+                    <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors">Privacy Policy</button>
+                    <span className="hidden sm:inline">•</span>
+                    <button onClick={() => setActiveModal('refund')} className="hover:text-white transition-colors">Cancellations & Refunds</button>
+                    <span className="hidden sm:inline">•</span>
+                    <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors">Terms & Conditions</button>
                 </div>
             </footer>
+
+            {/* Modal Overlay */}
+            <AnimatePresence>
+                {activeModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setActiveModal(null)}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-md max-h-[80vh] overflow-hidden flex flex-col shadow-2xl"
+                        >
+                            {/* Modal Header */}
+                            <div className="p-4 border-b border-white/10 flex justify-between items-center bg-zinc-900/50 backdrop-blur-md sticky top-0 z-10">
+                                <h2 className="text-lg font-bold text-white capitalize">
+                                    {activeModal === 'refund' ? 'Cancellations & Refunds' :
+                                        activeModal === 'terms' ? 'Terms & Conditions' :
+                                            activeModal === 'privacy' ? 'Privacy Policy' : 'Contact Us'}
+                                </h2>
+                                <button
+                                    onClick={() => setActiveModal(null)}
+                                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                                >
+                                    <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            {/* Modal Content */}
+                            <div className="p-6 overflow-y-auto text-sm text-white/70 leading-relaxed font-light space-y-4 text-left">
+                                {LEGAL_CONTENT[activeModal]}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
