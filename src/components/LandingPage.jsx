@@ -40,6 +40,13 @@ export default function LandingPage() {
                 return;
             }
 
+            if (googleSheetUrl.includes("docs.google.com/spreadsheets")) {
+                alert("Incorrect URL Configuration!\n\nYou have pasted the 'Spreadsheet URL' into .env.\nYou need the 'Apps Script Web App URL' which starts with 'https://script.google.com/macros/s/...'\n\n1. Go to your Sheet > Extensions > Apps Script.\n2. Paste the code.\n3. Deploy > New Deployment > Select 'Web App' > Who has access: 'Anyone'.\n4. Copy the URL ending in '/exec'.");
+                setStatus('idle');
+                console.error("Wrong URL Type: User used Spreadsheet URL instead of Web App URL.");
+                return;
+            }
+
             // Create FormData for Google Apps Script
             const data = new FormData();
             data.append('businessName', formData.businessName);
