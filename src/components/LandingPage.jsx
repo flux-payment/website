@@ -535,9 +535,7 @@ export default function LandingPage() {
             {/* FOOTER */}
             <footer className="mt-auto flex flex-col items-center gap-4 w-full pb-6 z-10 px-4 pt-12 border-t border-white/5 bg-black">
                 <p className="text-gray-500 text-sm">© 2026 Flux Payment Technologies. All rights reserved.</p>
-                <p className="text-gray-600 text-sm">
-                    <a href="mailto:paywithfluxtech@gmail.com" className="hover:text-flux-primary transition-colors">paywithfluxtech@gmail.com</a>
-                </p>
+
 
                 <div className="flex flex-wrap justify-center gap-x-2 gap-y-2 text-xs text-white/40">
                     <button onClick={() => setActiveModal('contact')} className="hover:text-white transition-colors">Contact Us</button>
