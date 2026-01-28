@@ -54,7 +54,7 @@ export default function Navbar() {
                 <div className="hidden md:flex items-center gap-8">
                     <button onClick={() => scrollToSection('about')} className="text-sm font-medium text-white/70 hover:text-white transition-colors">About</button>
                     <button onClick={() => scrollToSection('pricing')} className="text-sm font-medium text-white/70 hover:text-white transition-colors">Pricing</button>
-                    <button onClick={() => scrollToSection('contact')} className="text-sm font-medium text-white/70 hover:text-white transition-colors">Contact</button>
+
 
                     <button
                         onClick={() => scrollToSection('contact')}
