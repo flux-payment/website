@@ -224,7 +224,10 @@ export default function LandingPage() {
                                     </li>
                                 </ul>
                             </div>
-                            <button className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 font-bold transition-all mt-auto">
+                            <button
+                                onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+                                className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 font-bold transition-all mt-auto"
+                            >
                                 Get Started
                             </button>
                         </motion.div>
@@ -259,7 +262,10 @@ export default function LandingPage() {
                                     </li>
                                 </ul>
                             </div>
-                            <button className="w-full py-4 rounded-xl bg-flux-primary hover:bg-flux-primary/90 text-white font-bold shadow-lg transition-all mt-auto">
+                            <button
+                                onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+                                className="w-full py-4 rounded-xl bg-flux-primary hover:bg-flux-primary/90 text-white font-bold shadow-lg transition-all mt-auto"
+                            >
                                 Contact Sales
                             </button>
                         </motion.div>
