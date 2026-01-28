@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
-export default function FlyingCards() {
+export default function FlyingCards({ title = "COMING SOON" }) {
     const containerRef = useRef(null);
 
     const { scrollYProgress } = useScroll({
@@ -67,7 +67,7 @@ export default function FlyingCards() {
                                     textShadow: '0 25px 70px rgba(0, 0, 0, 0.95), 0 0 140px rgba(99, 102, 241, 0.7)',
                                 }}
                             >
-                                COMING SOON
+                                {title}
                             </h2>
                             <div
                                 className="w-full h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent mt-6"
