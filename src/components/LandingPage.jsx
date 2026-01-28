@@ -17,14 +17,41 @@ export default function LandingPage() {
     });
     const [status, setStatus] = useState('idle'); // idle, loading, success, error
     const [activeModal, setActiveModal] = useState(null);
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        // Email Validation
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailRegex.test(formData.email)) {
+            newErrors.email = "Please enter a valid email address.";
+        }
+
+        // Phone Validation
+        const phoneRegex = /^[0-9]{10}$/; // Simple 10 digit validation
+        if (!formData.phone.match(phoneRegex)) {
+            newErrors.phone = "Please enter a valid 10-digit phone number.";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        // Clear error when user types
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: null }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
+
         setStatus('loading');
 
         try {
@@ -493,9 +520,10 @@ export default function LandingPage() {
                                             value={formData.email}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all"
+                                            className={`w-full px-4 py-3 bg-black/50 border ${errors.email ? 'border-red-500' : 'border-white/10'} rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all`}
                                             placeholder="Business Email"
                                         />
+                                        {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-400">Phone Number</label>
@@ -505,9 +533,10 @@ export default function LandingPage() {
                                             value={formData.phone}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all"
+                                            className={`w-full px-4 py-3 bg-black/50 border ${errors.phone ? 'border-red-500' : 'border-white/10'} rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all`}
                                             placeholder="Business Phone Number"
                                         />
+                                        {errors.phone && <p className="text-red-500 text-xs">{errors.phone}</p>}
                                     </div>
                                 </div>
 
