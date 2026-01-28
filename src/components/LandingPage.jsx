@@ -28,17 +28,16 @@ export default function LandingPage() {
         setStatus('loading');
 
         try {
-            // Mock submission delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // await new Promise(resolve => setTimeout(resolve, 1500)); // Removed mock delay
 
-            // In a real scenario, we would use axios.post here
-            // await axios.post('https://razorpay-wallet-backend.onrender.com/api/merchants', formData);
-            // Since we don't have the exact API contract, we'll simulate success for the demo.
+            // API Endpoint for merchant signup
+            const backendUrl = import.meta.env.VITE_BACKEND_URL;
+            await axios.post(`${backendUrl}/api/merchants`, formData);
 
             setStatus('success');
             setFormData({ businessName: '', contactPerson: '', email: '', phone: '' });
         } catch (error) {
-            console.error(error);
+            console.error("Signup failed:", error);
             setStatus('error');
         }
     };
