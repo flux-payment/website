@@ -75,65 +75,97 @@ export default function LandingPage() {
             {/* SEPARATOR GRADIENT */}
             <div className="h-32 bg-gradient-to-b from-black to-zinc-950 pointer-events-none" />
 
-            {/* ABOUT SECTION - Business Logic */}
+            {/* ABOUT SECTION - Premium Commerce OS */}
             <section id="about" className="py-24 px-6 bg-zinc-950 relative">
                 <div className="max-w-7xl mx-auto">
-                    <motion.h2
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        className="text-4xl md:text-6xl font-black mb-16 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500 font-header"
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="mb-20 space-y-4"
                     >
-                        ABOUT FLUX
-                    </motion.h2>
+                        <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500 font-header leading-tight">
+                            The Operating System for <br />
+                            <span className="text-white">Premium Commerce.</span>
+                        </h2>
+                        <p className="text-xl md:text-2xl text-gray-400 max-w-3xl">
+                            Flux is India’s first credit-led marketplace connecting high-intent customers with exclusive offline retailers. We are rewriting the rules of local transactions.
+                        </p>
+                    </motion.div>
 
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div className="grid md:grid-cols-2 gap-16 items-start">
                         <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="space-y-8 text-lg text-gray-400 leading-relaxed"
+                            className="space-y-12"
                         >
-                            <p>
-                                <strong className="text-white">Flux</strong> is a financial technology platform that enables offline retailers to accept digital payments. We act as a <strong className="text-flux-primary">Technology Service Provider (TSP)</strong> connecting merchants to payment aggregators via secure <strong className="text-flux-primary">Card-on-File Tokenization (CoF)</strong>.
-                            </p>
-
-                            <div className="pl-6 border-l-2 border-flux-primary space-y-4">
-                                <h3 className="text-xl font-bold text-white">How it works:</h3>
-                                <ul className="space-y-3">
-                                    <li className="flex items-start gap-3">
-                                        <span className="text-flux-primary mt-1">01.</span>
-                                        <span>Merchants register on the Flux Platform.</span>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <span className="text-flux-primary mt-1">02.</span>
-                                        <span>Customers pay using the Flux App or Web Interface.</span>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <span className="text-flux-primary mt-1">03.</span>
-                                        <span>Transactions are processed securely via RBI-compliant payment gateways.</span>
-                                    </li>
-                                </ul>
+                            <div className="space-y-4">
+                                <h3 className="text-2xl font-bold text-white border-l-4 border-flux-primary pl-4">How the Flux Ecosystem Works</h3>
+                                <p className="text-gray-400 text-lg">
+                                    We operate on a <strong className="text-white">Managed Marketplace Model</strong>, ensuring trust, speed, and liquidity for both buyers and sellers.
+                                </p>
                             </div>
+
+                            <ul className="space-y-8">
+                                <li className="relative pl-8 border-l border-white/10 pb-8 last:pb-0 last:border-0">
+                                    <span className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-flux-primary ring-4 ring-black" />
+                                    <h4 className="text-lg font-bold text-white mb-2">01. The Flux Network (Partner Onboarding)</h4>
+                                    <p className="text-gray-400">Premium offline retailers join Flux as Verified Fulfillment Partners. We curate only the best service providers (Electronics, Wellness, Luxury) to ensure quality.</p>
+                                </li>
+                                <li className="relative pl-8 border-l border-white/10 pb-8 last:pb-0 last:border-0">
+                                    <span className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-flux-primary ring-4 ring-black" />
+                                    <h4 className="text-lg font-bold text-white mb-2">02. Frictionless Checkout (The Transaction)</h4>
+                                    <p className="text-gray-400">Customers purchase goods and services directly via the Flux App. We act as the <strong className="text-flux-primary">Merchant of Record (MoR)</strong>, handling the complexity of credit-card processing, security, and tokenization so the user doesn't have to.</p>
+                                </li>
+                                <li className="relative pl-8 border-l border-white/10 pb-8 last:pb-0 last:border-0">
+                                    <span className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-flux-primary ring-4 ring-black" />
+                                    <h4 className="text-lg font-bold text-white mb-2">03. Instant Fulfillment (The Service)</h4>
+                                    <p className="text-gray-400">Once the transaction is verified on our platform, the Partner provides the product or service instantly. No waiting, no friction.</p>
+                                </li>
+                                <li className="relative pl-8 border-l border-white/10 pb-8 last:pb-0 last:border-0">
+                                    <span className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-flux-primary ring-4 ring-black" />
+                                    <h4 className="text-lg font-bold text-white mb-2">04. Partner Settlements (The Payout)</h4>
+                                    <p className="text-gray-400">We handle the financial heavy lifting. Flux consolidates daily sales and disburses Vendor Payouts to our partners on a <strong className="text-white">T+1 cycle</strong>, ensuring their cash flow never stops.</p>
+                                </li>
+                            </ul>
                         </motion.div>
 
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
+                            initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.4 }}
-                            className="relative h-[400px] rounded-3xl bg-gradient-to-br from-zinc-900 to-black border border-white/10 p-8 flex items-center justify-center overflow-hidden group"
+                            className="sticky top-32"
                         >
-                            <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:30px_30px]" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                            {/* Abstract Visual of the Ecosystem */}
+                            <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-zinc-900 to-black border border-white/10 overflow-hidden flex items-center justify-center">
+                                <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:40px_40px]" />
+                                <div className="relative z-10 w-3/4 h-3/4 flex flex-col justify-between">
+                                    {/* Buyers */}
+                                    <div className="flex justify-center">
+                                        <div className="px-6 py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-sm font-bold animate-pulse">
+                                            High-Intent Customers
+                                        </div>
+                                    </div>
 
-                            {/* Visual Representation of Flow */}
-                            <div className="relative z-10 flex flex-col items-center gap-8">
-                                <div className="px-6 py-3 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm text-sm">Merchant</div>
-                                <div className="h-12 w-[1px] bg-gradient-to-b from-white/20 to-flux-primary"></div>
-                                <div className="px-8 py-4 bg-flux-primary/20 rounded-xl border border-flux-primary/50 backdrop-blur-md font-bold text-flux-primary shadow-[0_0_30px_rgba(99,102,241,0.3)]">
-                                    FLUX TSP
+                                    {/* Central Engine */}
+                                    <div className="flex-1 flex items-center justify-center my-8">
+                                        <div className="w-40 h-40 bg-flux-primary/20 rounded-full border border-flux-primary/50 flex items-center justify-center relative shadow-[0_0_50px_rgba(99,102,241,0.3)]">
+                                            <div className="text-center">
+                                                <div className="text-2xl font-black text-white">FLUX</div>
+                                                <div className="text-xs text-flux-primary font-bold tracking-widest">ECOSYSTEM</div>
+                                            </div>
+                                            {/* Orbiting dots */}
+                                            <div className="absolute inset-0 animate-spin-slow rounded-full border border-dashed border-white/20" />
+                                        </div>
+                                    </div>
+
+                                    {/* Partners */}
+                                    <div className="flex justify-between w-full px-4">
+                                        <div className="px-4 py-2 bg-zinc-800 rounded-lg border border-white/10 text-xs text-gray-400">Electronics</div>
+                                        <div className="px-4 py-2 bg-zinc-800 rounded-lg border border-white/10 text-xs text-gray-400">Luxury</div>
+                                        <div className="px-4 py-2 bg-zinc-800 rounded-lg border border-white/10 text-xs text-gray-400">Wellness</div>
+                                    </div>
                                 </div>
-                                <div className="h-12 w-[1px] bg-gradient-to-b from-flux-primary to-white/20"></div>
-                                <div className="px-6 py-3 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm text-sm">Payment Aggregator</div>
                             </div>
                         </motion.div>
                     </div>
@@ -148,67 +180,73 @@ export default function LandingPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         className="text-center mb-20"
                     >
-                        <h2 className="text-4xl md:text-6xl font-black mb-6 font-header">PRICING</h2>
-                        <p className="text-xl text-gray-400">We offer transparent pricing for our merchant partners.</p>
+                        <h2 className="text-4xl md:text-6xl font-black mb-6 font-header">PRICING & PLANS</h2>
+                        <p className="text-xl text-gray-400">Transparent pricing for our partner network.</p>
                     </motion.div>
 
                     <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                         {/* Standard Plan */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="p-8 rounded-3xl bg-zinc-900/50 border border-white/10 hover:border-flux-primary/50 transition-all group"
+                            className="p-8 rounded-3xl bg-zinc-900/50 border border-white/10 hover:border-flux-primary/50 transition-all group flex flex-col"
                         >
-                            <h3 className="text-2xl font-bold mb-2">Standard Merchant</h3>
-                            <div className="mb-6 flex items-baseline gap-2">
-                                <span className="text-5xl font-black text-white">₹0.00</span>
-                                <span className="text-gray-400">/ setup</span>
+                            <div className="flex-1">
+                                <h3 className="text-2xl font-bold mb-2">Standard Access</h3>
+                                <div className="mb-6 flex items-baseline gap-2">
+                                    <span className="text-5xl font-black text-white">₹0</span>
+                                    <span className="text-gray-400">/ month</span>
+                                </div>
+                                <ul className="space-y-4 text-gray-300 mb-8">
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        Standard MDR Transaction Fee
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        T+1 Days Settlement
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        Email Support
+                                    </li>
+                                </ul>
                             </div>
-                            <ul className="space-y-4 text-gray-300 mb-8">
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    Zero Setup Fee
-                                </li>
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    Standard Settlement (T+1)
-                                </li>
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    2% Transaction Fee (MDR)
-                                </li>
-                            </ul>
-                            <button className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 font-bold transition-all">
+                            <button className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 font-bold transition-all mt-auto">
                                 Get Started
                             </button>
                         </motion.div>
 
-                        {/* Enterprise Plan */}
+                        {/* Flux Black (Enterprise) */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="relative p-8 rounded-3xl bg-zinc-900 border border-flux-primary/30 shadow-[0_0_50px_-20px_rgba(99,102,241,0.3)] transition-all overflow-hidden"
+                            className="relative p-8 rounded-3xl bg-gradient-to-b from-zinc-900 to-black border border-flux-primary/30 shadow-[0_0_50px_-20px_rgba(99,102,241,0.3)] transition-all overflow-hidden flex flex-col"
                         >
-                            <div className="absolute top-0 right-0 px-4 py-1 bg-flux-primary text-xs font-bold rounded-bl-xl">RECOMMENDED</div>
+                            <div className="absolute top-0 right-0 px-4 py-1 bg-flux-primary text-xs font-bold rounded-bl-xl text-white">RECOMMENDED</div>
 
-                            <h3 className="text-2xl font-bold mb-2">Enterprise Partner</h3>
-                            <div className="mb-6 flex items-baseline gap-2">
-                                <span className="text-5xl font-black text-white">₹4,999</span>
-                                <span className="text-gray-400">/ year</span>
+                            <div className="flex-1">
+                                <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                                    Flux Black <span className="text-xs px-2 py-1 bg-white/10 rounded border border-white/20 font-normal">ENTERPRISE</span>
+                                </h3>
+                                <div className="mb-6 flex items-baseline gap-2">
+                                    <span className="text-5xl font-black text-white">₹4,999</span>
+                                    <span className="text-gray-400">/ year</span>
+                                </div>
+                                <ul className="space-y-4 text-gray-300 mb-8">
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        <span className="font-bold text-white">Custom Rates</span>
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        Priority Payouts
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        Dedicated Key Manager
+                                    </li>
+                                </ul>
                             </div>
-                            <ul className="space-y-4 text-gray-300 mb-8">
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    Instant Settlement
-                                </li>
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    Dedicated Account Manager
-                                </li>
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    Analytics Dashboard
-                                </li>
-                            </ul>
-                            <button className="w-full py-4 rounded-xl bg-flux-primary hover:bg-flux-primary/90 text-white font-bold shadow-lg transition-all">
+                            <button className="w-full py-4 rounded-xl bg-flux-primary hover:bg-flux-primary/90 text-white font-bold shadow-lg transition-all mt-auto">
                                 Contact Sales
                             </button>
                         </motion.div>
