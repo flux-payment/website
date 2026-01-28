@@ -30,9 +30,22 @@ export default function LandingPage() {
         try {
             // await new Promise(resolve => setTimeout(resolve, 1500)); // Removed mock delay
 
-            // API Endpoint for merchant signup
-            const backendUrl = import.meta.env.VITE_BACKEND_URL;
-            await axios.post(`${backendUrl}/api/merchants`, formData);
+            // Google Sheet Integration
+            const googleSheetUrl = import.meta.env.VITE_GOOGLE_SHEET_URL;
+
+            // Create FormData for Google Apps Script
+            const data = new FormData();
+            data.append('businessName', formData.businessName);
+            data.append('contactPerson', formData.contactPerson);
+            data.append('email', formData.email);
+            data.append('phone', formData.phone);
+            data.append('created_at', new Date().toISOString());
+
+            await fetch(googleSheetUrl, {
+                method: 'POST',
+                body: data,
+                mode: 'no-cors' // Handle CORS for Google Scripts
+            });
 
             setStatus('success');
             setFormData({ businessName: '', contactPerson: '', email: '', phone: '' });
