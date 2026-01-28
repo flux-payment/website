@@ -32,6 +32,13 @@ export default function LandingPage() {
 
             // Google Sheet Integration
             const googleSheetUrl = import.meta.env.VITE_GOOGLE_SHEET_URL;
+            console.log("Submitting to Google Sheet URL:", googleSheetUrl);
+
+            if (!googleSheetUrl || googleSheetUrl.includes("PLACEHOLDER")) {
+                alert("Please configure VITE_GOOGLE_SHEET_URL in your .env file!");
+                setStatus('idle');
+                return;
+            }
 
             // Create FormData for Google Apps Script
             const data = new FormData();
