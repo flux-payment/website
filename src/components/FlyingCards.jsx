@@ -10,13 +10,13 @@ export default function FlyingCards({ title = "COMING SOON" }) {
     });
 
     // COMING SOON and CARDS animate TOGETHER and END together
-    const textY = useTransform(scrollYProgress, [0, 0.9], ["80vh", "50vh"]);
+    const textY = useTransform(scrollYProgress, [0, 0.9], ["80vh", "40vh"]); // Moved up from 50vh
     const textOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
 
     // CARDS burst OUT from Coming Soon AS IT RISES
 
     // CARD 1 - Stops mid-flight with tilt (funky)
-    const card1Y = useTransform(scrollYProgress, [0, 0.85], ["80vh", "30vh"]);
+    const card1Y = useTransform(scrollYProgress, [0, 0.85], ["80vh", "20vh"]); // Moved up from 30vh
     const card1X = useTransform(scrollYProgress, [0, 0.85], ["0vw", "-25vw"]);
     const card1RotateZ = useTransform(scrollYProgress, [0, 0.85], [0, -220]);
     const card1RotateY = useTransform(scrollYProgress, [0, 0.85], [0, 120]);
@@ -25,14 +25,14 @@ export default function FlyingCards({ title = "COMING SOON" }) {
     const card1Scale = useTransform(scrollYProgress, [0, 0.4, 0.85], [0.5, 1.2, 1]);
 
     // CARD 2 - Stops mid-flight with tilt (funky)
-    const card2Y = useTransform(scrollYProgress, [0, 0.9], ["80vh", "26vh"]);
+    const card2Y = useTransform(scrollYProgress, [0, 0.9], ["80vh", "16vh"]); // Moved up from 26vh
     const card2RotateZ = useTransform(scrollYProgress, [0, 0.9], [0, 200]);
     const card2RotateX = useTransform(scrollYProgress, [0, 0.9], [0, -130]);
     const card2Opacity = useTransform(scrollYProgress, [0, 0.25], [0, 1]);
     const card2Scale = useTransform(scrollYProgress, [0, 0.45, 0.9], [0.5, 1.3, 1.1]);
 
     // CARD 3 - Stops mid-flight with tilt (funky)
-    const card3Y = useTransform(scrollYProgress, [0, 0.87], ["80vh", "30vh"]);
+    const card3Y = useTransform(scrollYProgress, [0, 0.87], ["80vh", "20vh"]); // Moved up from 30vh
     const card3X = useTransform(scrollYProgress, [0, 0.87], ["0vw", "25vw"]);
     const card3RotateZ = useTransform(scrollYProgress, [0, 0.87], [0, 250]);
     const card3RotateY = useTransform(scrollYProgress, [0, 0.87], [0, -140]);
@@ -62,7 +62,7 @@ export default function FlyingCards({ title = "COMING SOON" }) {
                             className="text-center px-8"
                         >
                             <h2
-                                className="text-[8vw] md:text-[6vw] font-black tracking-tight text-white leading-none whitespace-nowrap"
+                                className="text-[5vw] md:text-[4vw] font-black tracking-tight text-white leading-tight break-words max-w-[90vw]"
                                 style={{
                                     textShadow: '0 25px 70px rgba(0, 0, 0, 0.95), 0 0 140px rgba(99, 102, 241, 0.7)',
                                 }}
