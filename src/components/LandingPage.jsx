@@ -324,7 +324,7 @@ export default function LandingPage() {
                                             onChange={handleInputChange}
                                             required
                                             className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all"
-                                            placeholder="hello@flux.com"
+                                            placeholder="paywithfluxtech@gmail.com"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -364,6 +364,9 @@ export default function LandingPage() {
             {/* FOOTER */}
             <footer className="py-12 border-t border-white/5 bg-black text-center text-gray-500 text-sm">
                 <p>© 2026 Flux Payment Technologies. All rights reserved.</p>
+                <p className="mt-2 text-gray-600">
+                    <a href="mailto:paywithfluxtech@gmail.com" className="hover:text-flux-primary transition-colors">paywithfluxtech@gmail.com</a>
+                </p>
                 <div className="flex justify-center gap-6 mt-4">
                     <a href="#" className="hover:text-white transition-colors">Privacy</a>
                     <a href="#" className="hover:text-white transition-colors">Terms</a>
