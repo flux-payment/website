@@ -33,14 +33,14 @@ export default function Navbar() {
         <motion.nav
             initial={{ y: -100 }}
             animate={{ y: 0 }}
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-4 bg-black/80 backdrop-blur-md border-b border-white/10' : 'py-6 bg-transparent'
+            className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-300 ${scrolled ? 'py-4 bg-black/80 backdrop-blur-md border-b border-white/10' : 'py-6 bg-transparent'
                 }`}
         >
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                 {/* Logo */}
                 <div
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="flex items-center gap-3 cursor-pointer group"
+                    className={`flex items-center gap-3 cursor-pointer group transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 >
                     <img
                         src={fluxLogo}

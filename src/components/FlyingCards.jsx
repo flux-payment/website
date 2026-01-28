@@ -10,8 +10,8 @@ export default function FlyingCards({ title = "COMING SOON" }) {
     });
 
     // COMING SOON and CARDS animate TOGETHER and END together
-    const textY = useTransform(scrollYProgress, [0, 0.9], ["80vh", "40vh"]); // Moved up from 50vh
-    const textOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
+    const textY = useTransform(scrollYProgress, [0, 1], ["80vh", "60vh"]);
+    const textOpacity = useTransform(scrollYProgress, [0, 0.2, 0.4], [0, 1, 0]); // Fade out as it rises
 
     // CARDS burst OUT from Coming Soon AS IT RISES
 

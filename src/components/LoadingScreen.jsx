@@ -6,20 +6,16 @@ export default function HeroHeartbeat() {
     const { scrollYProgress } = useScroll();
     const scrollRange = [0, 0.3];
 
-    // Vertical positioning - same for both
-    const heroY = useTransform(scrollYProgress, scrollRange, ["50vh", "24px"]);
+    // Vertical positioning - move higher to match Navbar
+    const heroY = useTransform(scrollYProgress, scrollRange, ["50vh", "15px"]); // Changed 24px to 15px
 
     // Scale - same for both
     const uniqueScale = useTransform(scrollYProgress, scrollRange, [1, 0.15]);
 
-    // TEXT stays centered horizontally
-    // It starts at 50% - but we need to shift it slightly right AT THE END to make room for logo if we want them centered together at top
-    // BUT user wants text centered initially.
+    // Opacity - Fade out completely by the time it settles, letting Navbar take over
+    const containerOpacity = useTransform(scrollYProgress, [0.25, 0.35], [1, 0]);
 
-    // Let's keep text perfectly centered horizontally the whole time
-    // And logo sits to the left of it.
-
-    // Logo opacity
+    // Logo opacity - keeps existing logic but bound by container opacity
     const logoOpacity = useTransform(scrollYProgress, [0.15, 0.25], [0, 1]);
 
     // Heartbeat
@@ -45,6 +41,7 @@ export default function HeroHeartbeat() {
                     y: heroY,
                     x: "-50%", // Always centered
                     scale: uniqueScale,
+                    opacity: containerOpacity,
                     originX: 0.5,
                     originY: 0.5,
                     willChange: 'transform',
