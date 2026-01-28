@@ -163,34 +163,171 @@ export default function LandingPage() {
                             transition={{ delay: 0.4 }}
                             className="sticky top-32"
                         >
-                            {/* Abstract Visual of the Ecosystem */}
-                            <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-zinc-900 to-black border border-white/10 overflow-hidden flex items-center justify-center">
-                                <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:40px_40px]" />
-                                <div className="relative z-10 w-3/4 h-3/4 flex flex-col justify-between">
-                                    {/* Buyers */}
-                                    <div className="flex justify-center">
-                                        <div className="px-6 py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-sm font-bold animate-pulse">
-                                            High-Intent Customers
+                            {/* Ecosystem Visual - Connected Flow */}
+                            <div className="relative aspect-square rounded-3xl bg-zinc-950 border border-white/10 overflow-hidden flex items-center justify-center">
+                                {/* Background Grid */}
+                                <div className="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
+
+                                {/* Connection Lines SVG Layer */}
+                                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+                                    {/* Line: Customer to Flux */}
+                                    <motion.path
+                                        d="M300 120 L300 250"
+                                        stroke="url(#gradient-line)"
+                                        strokeWidth="2"
+                                        fill="none"
+                                        initial={{ pathLength: 0 }}
+                                        whileInView={{ pathLength: 1 }}
+                                        transition={{ duration: 1.5, ease: "easeInOut" }}
+                                    />
+                                    {/* Lines: Flux to Partners */}
+                                    <motion.path
+                                        d="M300 350 L150 450"
+                                        stroke="url(#gradient-line)"
+                                        strokeWidth="2"
+                                        fill="none"
+                                        initial={{ pathLength: 0 }}
+                                        whileInView={{ pathLength: 1 }}
+                                        transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+                                    />
+                                    <motion.path
+                                        d="M300 350 L300 450"
+                                        stroke="url(#gradient-line)"
+                                        strokeWidth="2"
+                                        fill="none"
+                                        initial={{ pathLength: 0 }}
+                                        whileInView={{ pathLength: 1 }}
+                                        transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+                                    />
+                                    <motion.path
+                                        d="M300 350 L450 450"
+                                        stroke="url(#gradient-line)"
+                                        strokeWidth="2"
+                                        fill="none"
+                                        initial={{ pathLength: 0 }}
+                                        whileInView={{ pathLength: 1 }}
+                                        transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+                                    />
+
+                                    {/* Moving Particles (Simulating Transactions) */}
+                                    <circle r="4" fill="#fff" filter="url(#glow)">
+                                        <animateMotion
+                                            dur="2s"
+                                            repeatCount="indefinite"
+                                            path="M300 120 L300 250"
+                                            keyPoints="0;1"
+                                            keyTimes="0;1"
+                                            calcMode="linear"
+                                        />
+                                    </circle>
+                                    <circle r="3" fill="#6366f1">
+                                        <animateMotion
+                                            dur="2s"
+                                            begin="1s"
+                                            repeatCount="indefinite"
+                                            path="M300 350 L150 450"
+                                            keyPoints="0;1"
+                                            keyTimes="0;1"
+                                            calcMode="linear"
+                                        />
+                                    </circle>
+                                    <circle r="3" fill="#6366f1">
+                                        <animateMotion
+                                            dur="2s"
+                                            begin="1.5s"
+                                            repeatCount="indefinite"
+                                            path="M300 350 L300 450"
+                                            keyPoints="0;1"
+                                            keyTimes="0;1"
+                                            calcMode="linear"
+                                        />
+                                    </circle>
+                                    <circle r="3" fill="#6366f1">
+                                        <animateMotion
+                                            dur="2s"
+                                            begin="1.2s"
+                                            repeatCount="indefinite"
+                                            path="M300 350 L450 450"
+                                            keyPoints="0;1"
+                                            keyTimes="0;1"
+                                            calcMode="linear"
+                                        />
+                                    </circle>
+
+                                    <defs>
+                                        <linearGradient id="gradient-line" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stopColor="rgba(99, 102, 241, 0)" />
+                                            <stop offset="50%" stopColor="rgba(99, 102, 241, 1)" />
+                                            <stop offset="100%" stopColor="rgba(99, 102, 241, 0)" />
+                                        </linearGradient>
+                                        <filter id="glow">
+                                            <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                                            <feMerge>
+                                                <feMergeNode in="coloredBlur" />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
+                                </svg>
+
+                                {/* Nodes Container (CSS Grid/Flex) - Properly positioned relative to SVG coordinates */}
+                                {/* Assuming SVG ViewBox is ~ 600x600 based on paths roughly? Actually wrapper is responsive. 
+                                    I will use absolute percentages to position the HTML nodes to match the SVG paths.
+                                    Center is 50%.
+                                */}
+                                <div className="absolute inset-0 z-10 w-full h-full">
+                                    {/* 1. Customer Node (Top Center) */}
+                                    <div className="absolute top-[15%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+                                        <div className="w-16 h-16 rounded-full bg-zinc-900 border-2 border-white/20 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                                            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
                                         </div>
+                                        <span className="text-xs font-bold text-gray-300 tracking-wider bg-black/50 px-2 py-1 rounded">CUSTOMERS</span>
                                     </div>
 
-                                    {/* Central Engine */}
-                                    <div className="flex-1 flex items-center justify-center my-8">
-                                        <div className="w-40 h-40 bg-flux-primary/20 rounded-full border border-flux-primary/50 flex items-center justify-center relative shadow-[0_0_50px_rgba(99,102,241,0.3)]">
-                                            <div className="text-center">
-                                                <div className="text-2xl font-black text-white">FLUX</div>
-                                                <div className="text-xs text-flux-primary font-bold tracking-widest">ECOSYSTEM</div>
+                                    {/* 2. Flux Central Engine (Center) */}
+                                    <div className="absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2">
+                                        <div className="relative">
+                                            {/* Pulse Effects */}
+                                            <div className="absolute inset-0 bg-flux-primary/30 rounded-full animate-ping"></div>
+                                            <div className="w-24 h-24 bg-black border-2 border-flux-primary rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(99,102,241,0.5)] z-20 relative">
+                                                <div className="text-center">
+                                                    <span className="block text-2xl font-black text-white tracking-widest">FLUX</span>
+                                                </div>
                                             </div>
-                                            {/* Orbiting dots */}
-                                            <div className="absolute inset-0 animate-spin-slow rounded-full border border-dashed border-white/20" />
                                         </div>
                                     </div>
 
-                                    {/* Partners */}
-                                    <div className="flex justify-between w-full px-4">
-                                        <div className="px-4 py-2 bg-zinc-800 rounded-lg border border-white/10 text-xs text-gray-400">Electronics</div>
-                                        <div className="px-4 py-2 bg-zinc-800 rounded-lg border border-white/10 text-xs text-gray-400">Luxury</div>
-                                        <div className="px-4 py-2 bg-zinc-800 rounded-lg border border-white/10 text-xs text-gray-400">Wellness</div>
+                                    {/* 3. Partner Nodes (Bottom) */}
+                                    <div className="absolute bottom-[15%] w-full flex justify-between px-16">
+                                        {/* Partner 1 */}
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center">
+                                                <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                            <span className="text-[10px] text-gray-500 font-mono">ELECTRONICS</span>
+                                        </div>
+                                        {/* Partner 2 */}
+                                        <div className="flex flex-col items-center gap-2 translate-y-8">
+                                            <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center">
+                                                <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                                </svg>
+                                            </div>
+                                            <span className="text-[10px] text-gray-500 font-mono">LUXURY</span>
+                                        </div>
+                                        {/* Partner 3 */}
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center">
+                                                <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                </svg>
+                                            </div>
+                                            <span className="text-[10px] text-gray-500 font-mono">WELLNESS</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
