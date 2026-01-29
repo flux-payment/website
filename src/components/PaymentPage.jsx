@@ -56,21 +56,50 @@ const MerchantAvatar = ({ name }) => {
     const { Icon, gradient } = useMemo(() => getSmartAvatarProps(name), [name]);
 
     return (
-        <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.2 }}
-            className={`w-14 h-14 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center shadow-lg shadow-black/30 mb-2 ring-2 ring-white/20 relative overflow-hidden group`}
-        >
-            {/* Inner Glow */}
-            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative group">
+            <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                className="relative z-10"
+            >
+                <div className={`w-20 h-20 bg-gradient-to-br ${gradient} rounded-[2rem] flex items-center justify-center shadow-2xl shadow-black/50 ring-4 ring-white/10 relative overflow-hidden transform transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3`}>
 
-            {/* Icon */}
-            <Icon className="w-7 h-7 text-white drop-shadow-md relative z-10" strokeWidth={1.5} />
+                    {/* Animated Noise Texture Overlay */}
+                    <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
 
-            {/* Decorative Circle */}
-            <div className="absolute -bottom-3 -right-3 w-8 h-8 bg-white/10 rounded-full blur-md" />
-        </motion.div>
+                    {/* Abstract Shapes/Blobs */}
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        className="absolute -top-4 -right-4 w-12 h-12 bg-white/20 rounded-full blur-xl"
+                    />
+                    <motion.div
+                        animate={{ rotate: -360 }}
+                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                        className="absolute -bottom-4 -left-4 w-16 h-16 bg-black/10 rounded-full blur-xl"
+                    />
+
+                    {/* Main Icon */}
+                    <motion.div
+                        whileHover={{ rotate: [0, -10, 10, 0] }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <Icon className="w-9 h-9 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] relative z-10" strokeWidth={2} />
+                    </motion.div>
+
+                    {/* Glossy Reflection */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ transform: 'skewX(-20deg) translateX(-150%)', animation: 'shine 3s infinite' }} />
+                </div>
+            </motion.div>
+
+            {/* Background Glow */}
+            <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className={`absolute inset-0 bg-gradient-to-br ${gradient} blur-2xl opacity-60 -z-10 rounded-full`}
+            />
+        </div>
     );
 };
 
