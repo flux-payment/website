@@ -9,42 +9,63 @@ function ScannerPage() {
     const [activeModal, setActiveModal] = useState(null);
     const navigate = useNavigate();
 
+    const isScanningRef = React.useRef(false);
+
     const handleScan = (detectedCodes) => {
         if (detectedCodes && detectedCodes.length > 0) {
             const rawValue = detectedCodes[0].rawValue;
+            if (!rawValue) return;
+
+            // Prevent multiple actions if we're already processing a success
+            if (isScanningRef.current) return;
+
             setResult(rawValue);
+            console.log("Scanned value:", rawValue);
 
             try {
-                // Check if it is a URL first
-                if (rawValue.startsWith('http')) {
-                    const url = new URL(rawValue);
+                const normalizedValue = rawValue.trim();
+
+                // 1. Check if it is a URL (starts with http)
+                if (normalizedValue.toLowerCase().startsWith('http')) {
+                    const url = new URL(normalizedValue);
                     const params = new URLSearchParams(url.search);
                     const qr = params.get('qr');
                     const sig = params.get('sig');
 
                     if (qr && sig) {
-                        // Redirect to internal payment route
-                        // If multiple query params, pass them along
+                        console.log("Valid Payment URL detected, redirecting...");
+                        isScanningRef.current = true;
+
+                        // Small delay to provide visual feedback
                         setTimeout(() => {
+                            // Redirect to internal payment route with extracted params
                             window.location.href = `/pay?qr=${qr}&sig=${sig}`;
-                        }, 500);
+                        }, 300);
                         return;
                     }
                 }
 
-                // Fallback to legacy JSON parsing (for old QRs)
-                const data = JSON.parse(rawValue);
-                if (data && data.payload && data.signature) {
-                    const searchParams = new URLSearchParams();
-                    searchParams.set('qr', data.payload);
-                    searchParams.set('sig', data.signature);
+                // 2. Fallback to legacy JSON parsing
+                // Only attempt if it looks like JSON (starts with {)
+                if (normalizedValue.startsWith('{')) {
+                    const data = JSON.parse(normalizedValue);
+                    if (data && data.payload && data.signature) {
+                        console.log("Valid Legacy JSON detected, redirecting...");
+                        isScanningRef.current = true;
 
-                    setTimeout(() => {
-                        window.location.href = `/pay?${searchParams.toString()}`;
-                    }, 500);
+                        const searchParams = new URLSearchParams();
+                        searchParams.set('qr', data.payload);
+                        searchParams.set('sig', data.signature);
+
+                        setTimeout(() => {
+                            window.location.href = `/pay?${searchParams.toString()}`;
+                        }, 300);
+                    }
                 }
             } catch (e) {
                 console.error("Failed to parse QR data:", e);
+                // Reset lock only if we failed (so they can try again or scan another)
+                // But generally we might want to just show the text result if parsing failed.
             }
         }
     };
