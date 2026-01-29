@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +7,17 @@ import FlyingCards from './FlyingCards';
 
 export default function LandingPage() {
     const navigate = useNavigate();
+
+    // Check for payment QR parameters on homepage and redirect to /pay
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const qr = params.get('qr');
+        const sig = params.get('sig');
+        if (qr && sig) {
+            // Redirect to /pay while preserving params
+            window.location.href = `/pay?qr=${qr}&sig=${sig}`;
+        }
+    }, []);
 
     // Form State
     const [formData, setFormData] = useState({

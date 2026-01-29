@@ -15,25 +15,36 @@ function ScannerPage() {
             setResult(rawValue);
 
             try {
-                // Parse the QR data (expected to be JSON with payload and signature)
+                // Check if it is a URL first
+                if (rawValue.startsWith('http')) {
+                    const url = new URL(rawValue);
+                    const params = new URLSearchParams(url.search);
+                    const qr = params.get('qr');
+                    const sig = params.get('sig');
+
+                    if (qr && sig) {
+                        // Redirect to internal payment route
+                        // If multiple query params, pass them along
+                        setTimeout(() => {
+                            window.location.href = `/pay?qr=${qr}&sig=${sig}`;
+                        }, 500);
+                        return;
+                    }
+                }
+
+                // Fallback to legacy JSON parsing (for old QRs)
                 const data = JSON.parse(rawValue);
                 if (data && data.payload && data.signature) {
-                    // Redirect to payment page with params
-                    // Note: signature needs to be encoded if it contains special chars, but let's pass it first
-                    // URL: /pay?qr={payload}&sig={signature}
                     const searchParams = new URLSearchParams();
                     searchParams.set('qr', data.payload);
                     searchParams.set('sig', data.signature);
 
-                    // Small delay to show success
                     setTimeout(() => {
                         window.location.href = `/pay?${searchParams.toString()}`;
                     }, 500);
                 }
             } catch (e) {
                 console.error("Failed to parse QR data:", e);
-                // If not JSON, maybe it's a direct URL? 
-                // For now, only handling the specific app format.
             }
         }
     };
