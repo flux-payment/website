@@ -132,11 +132,16 @@ function ScannerPage() {
                         <Scanner
                             onScan={handleScan}
                             onError={handleError}
+                            scanDelay={300}
+                            formats={['qr_code']}
                             components={{
                                 audio: true,
                                 onOff: true,
                                 torch: true,
                                 finder: false
+                            }}
+                            constraints={{
+                                facingMode: 'environment'
                             }}
                             styles={{
                                 container: {
@@ -145,7 +150,7 @@ function ScannerPage() {
                                     borderRadius: '1.5rem'
                                 },
                                 video: {
-                                    objectFit: 'cover',
+                                    // objectFit: 'cover', // Removed to ensure full frame visibility for better scanning
                                     width: '100%',
                                     height: '100%'
                                 }
