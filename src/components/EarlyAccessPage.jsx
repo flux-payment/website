@@ -32,8 +32,17 @@ export default function EarlyAccessPage() {
             if (response.ok) {
                 navigate('/download');
             } else {
-                const data = await response.json();
-                setError(data.message || 'Invalid invite code.');
+                const contentType = response.headers.get("content-type");
+                let message = 'Invalid invite code.';
+
+                if (contentType && contentType.toLowerCase().includes("application/json")) {
+                    const data = await response.json();
+                    message = data.message || message;
+                } else {
+                    const text = await response.text();
+                    message = text.trim() || message;
+                }
+                setError(message);
             }
         } catch (err) {
             console.error(err);
