@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -6,6 +6,7 @@ export default function DownloadPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const inviteCode = location.state?.code;
+    const [selectedPlatform, setSelectedPlatform] = useState('android');
 
     useEffect(() => {
         if (!inviteCode) {
@@ -15,6 +16,10 @@ export default function DownloadPage() {
 
     const handleDownload = async (e) => {
         e.preventDefault();
+
+        if (selectedPlatform !== 'android') {
+            return; // Only allow Android downloads for now
+        }
 
         if (inviteCode) {
             try {
@@ -84,19 +89,40 @@ export default function DownloadPage() {
                     </ul>
                 </div>
 
-                {/* Platform Availability */}
-                <div className="flex items-center justify-center gap-4 mb-6">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
-                        <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4483-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993.0001.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993 0 .5511-.4483.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396" />
-                        </svg>
-                        <span className="text-sm font-semibold text-green-500">Android Available</span>
-                    </div>
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-500/10 border border-gray-500/20">
-                        <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M14.94 5.19A4.38 4.38 0 0 0 16 2a4.44 4.44 0 0 0-3 1.52 4.17 4.17 0 0 0-1 3.09 3.69 3.69 0 0 0 2.94-1.42zm2.52 7.44a4.51 4.51 0 0 1 2.16-3.81 4.66 4.66 0 0 0-3.66-2c-1.56-.16-3 .91-3.83.91s-2-.89-3.3-.87A4.92 4.92 0 0 0 4.69 9.39C2.93 12.45 4.24 17 6 19.47c.8 1.21 1.8 2.58 3.12 2.53s1.75-.82 3.28-.82 2 .82 3.3.79 2.22-1.24 3.06-2.45a11 11 0 0 0 1.38-2.85 4.41 4.41 0 0 1-2.68-4.04z" />
-                        </svg>
-                        <span className="text-sm font-semibold text-gray-400">iOS Coming Soon</span>
+                {/* Platform Selection */}
+                <div className="mb-8">
+                    <p className="text-sm text-gray-400 text-center mb-4">Select Your Platform</p>
+                    <div className="flex items-center justify-center gap-4">
+                        {/* Android - Selectable */}
+                        <button
+                            onClick={() => setSelectedPlatform('android')}
+                            className={`flex flex-col items-center gap-3 px-8 py-6 rounded-2xl border-2 transition-all ${selectedPlatform === 'android'
+                                    ? 'bg-green-500/10 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]'
+                                    : 'bg-white/5 border-white/10 hover:border-green-500/50'
+                                }`}
+                        >
+                            <svg className="w-12 h-12 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4483-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993.0001.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993 0 .5511-.4483.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396" />
+                            </svg>
+                            <div className="text-center">
+                                <p className="font-bold text-white mb-1">Android</p>
+                                <p className="text-xs text-green-500">Available Now</p>
+                            </div>
+                        </button>
+
+                        {/* iOS - Coming Soon */}
+                        <button
+                            disabled
+                            className="flex flex-col items-center gap-3 px-8 py-6 rounded-2xl border-2 bg-white/5 border-white/10 opacity-50 cursor-not-allowed"
+                        >
+                            <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14.94 5.19A4.38 4.38 0 0 0 16 2a4.44 4.44 0 0 0-3 1.52 4.17 4.17 0 0 0-1 3.09 3.69 3.69 0 0 0 2.94-1.42zm2.52 7.44a4.51 4.51 0 0 1 2.16-3.81 4.66 4.66 0 0 0-3.66-2c-1.56-.16-3 .91-3.83.91s-2-.89-3.3-.87A4.92 4.92 0 0 0 4.69 9.39C2.93 12.45 4.24 17 6 19.47c.8 1.21 1.8 2.58 3.12 2.53s1.75-.82 3.28-.82 2 .82 3.3.79 2.22-1.24 3.06-2.45a11 11 0 0 0 1.38-2.85 4.41 4.41 0 0 1-2.68-4.04z" />
+                            </svg>
+                            <div className="text-center">
+                                <p className="font-bold text-gray-400 mb-1">iOS</p>
+                                <p className="text-xs text-gray-500">Coming Soon</p>
+                            </div>
+                        </button>
                     </div>
                 </div>
 
