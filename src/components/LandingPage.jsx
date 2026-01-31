@@ -386,26 +386,31 @@ export default function LandingPage() {
                         <p className="text-xl text-gray-400">Transparent pricing for our partner network.</p>
                     </motion.div>
 
-                    <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
                         {/* Standard Plan */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="p-8 rounded-3xl bg-zinc-900/50 border border-white/10 hover:border-flux-primary/50 transition-all group flex flex-col"
+                            className="relative p-8 rounded-3xl bg-zinc-900/50 border border-white/10 hover:border-flux-primary/50 transition-all group flex flex-col"
                         >
+                            <div className="absolute top-0 right-0 px-4 py-1 bg-gray-700 text-xs font-bold rounded-bl-xl text-white">WAITLISTED</div>
                             <div className="flex-1">
                                 <h3 className="text-2xl font-bold mb-2">Standard Access</h3>
                                 <div className="mb-6 flex items-baseline gap-2">
                                     <span className="text-5xl font-black text-white">₹0</span>
-                                    <span className="text-gray-400">/ month</span>
+                                    <span className="text-gray-400">/ year</span>
                                 </div>
                                 <ul className="space-y-4 text-gray-300 mb-8">
                                     <li className="flex items-center gap-3">
                                         <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                        Standard MDR Transaction Fee
+                                        <span className="font-bold text-white">One-Time Setup: ₹999</span>
                                     </li>
                                     <li className="flex items-center gap-3">
                                         <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                        T+1 Days Settlement
+                                        Flat 2% MDR
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        Standard T+1 Settlement
                                     </li>
                                     <li className="flex items-center gap-3">
                                         <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
@@ -414,10 +419,10 @@ export default function LandingPage() {
                                 </ul>
                             </div>
                             <button
-                                onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
-                                className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 font-bold transition-all mt-auto"
+                                disabled
+                                className="w-full py-4 rounded-xl bg-white/5 border border-white/10 font-bold transition-all mt-auto cursor-not-allowed text-gray-500"
                             >
-                                Get Started
+                                Currently Full
                             </button>
                         </motion.div>
 
@@ -426,11 +431,11 @@ export default function LandingPage() {
                             whileHover={{ y: -10 }}
                             className="relative p-8 rounded-3xl bg-gradient-to-b from-zinc-900 to-black border border-flux-primary/30 shadow-[0_0_50px_-20px_rgba(99,102,241,0.3)] transition-all overflow-hidden flex flex-col"
                         >
-                            <div className="absolute top-0 right-0 px-4 py-1 bg-flux-primary text-xs font-bold rounded-bl-xl text-white">RECOMMENDED</div>
+                            <div className="absolute top-0 right-0 px-4 py-1 bg-flux-primary text-xs font-bold rounded-bl-xl text-white">INVITE ONLY</div>
 
                             <div className="flex-1">
                                 <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                                    Flux Black <span className="text-xs px-2 py-1 bg-white/10 rounded border border-white/20 font-normal">ENTERPRISE</span>
+                                    Flux Black
                                 </h3>
                                 <div className="mb-6 flex items-baseline gap-2">
                                     <span className="text-5xl font-black text-white">₹4,999</span>
@@ -439,7 +444,11 @@ export default function LandingPage() {
                                 <ul className="space-y-4 text-gray-300 mb-8">
                                     <li className="flex items-center gap-3">
                                         <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                        <span className="font-bold text-white">Custom Rates</span>
+                                        <span className="font-bold text-white">Setup Fee: ₹499 (With Code)</span>
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        <span className="font-bold text-white">Reduced Custom MDR</span>
                                     </li>
                                     <li className="flex items-center gap-3">
                                         <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
@@ -447,129 +456,28 @@ export default function LandingPage() {
                                     </li>
                                     <li className="flex items-center gap-3">
                                         <svg className="w-5 h-5 text-flux-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                        Dedicated Key Manager
+                                        Dedicated WhatsApp Key Manager
                                     </li>
                                 </ul>
                             </div>
                             <button
-                                onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+                                onClick={() => window.location.href = '/early-access'}
                                 className="w-full py-4 rounded-xl bg-flux-primary hover:bg-flux-primary/90 text-white font-bold shadow-lg transition-all mt-auto"
                             >
-                                Contact Sales
+                                I Have a Code
                             </button>
                         </motion.div>
+                    </div>
+
+                    <div className="text-center">
+                        <p className="text-gray-500 text-sm">
+                            Standard Access is currently waitlisted. <a href="/early-access" className="text-flux-primary hover:text-white underline">Use an Invite Code to skip the queue.</a>
+                        </p>
                     </div>
                 </div>
             </section>
 
-            {/* CONTACT SECTION */}
-            <section id="contact" className="py-24 px-6 bg-zinc-950">
-                <div className="max-w-4xl mx-auto">
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        className="bg-zinc-900/40 border border-white/5 rounded-3xl p-8 md:p-12 backdrop-blur-sm"
-                    >
-                        <div className="text-center mb-12">
-                            <h2 className="text-4xl font-black mb-4 font-header">PARTNER WITH US</h2>
-                            <p className="text-gray-400">Join the revolution in offline digital payments.</p>
-                        </div>
 
-                        {status === 'success' ? (
-                            <motion.div
-                                initial={{ scale: 0.9, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                className="text-center py-12"
-                            >
-                                <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <svg className="w-10 h-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                </div>
-                                <h3 className="text-2xl font-bold mb-2">Application Received!</h3>
-                                <p className="text-gray-400">Our team will contact you shortly to onboard your business.</p>
-                                <button
-                                    onClick={() => setStatus('idle')}
-                                    className="mt-8 text-flux-primary hover:text-white transition-colors text-sm font-semibold"
-                                >
-                                    Submit another response
-                                </button>
-                            </motion.div>
-                        ) : (
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Business Name</label>
-                                        <input
-                                            type="text"
-                                            name="businessName"
-                                            value={formData.businessName}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all"
-                                            placeholder="Name of your business"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Contact Person</label>
-                                        <input
-                                            type="text"
-                                            name="contactPerson"
-                                            value={formData.contactPerson}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all"
-                                            placeholder="Full Name"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Email Address</label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            required
-                                            className={`w-full px-4 py-3 bg-black/50 border ${errors.email ? 'border-red-500' : 'border-white/10'} rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all`}
-                                            placeholder="Business Email"
-                                        />
-                                        {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Phone Number</label>
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleInputChange}
-                                            required
-                                            className={`w-full px-4 py-3 bg-black/50 border ${errors.phone ? 'border-red-500' : 'border-white/10'} rounded-xl focus:border-flux-primary focus:ring-1 focus:ring-flux-primary outline-none transition-all`}
-                                            placeholder="Business Phone Number"
-                                        />
-                                        {errors.phone && <p className="text-red-500 text-xs">{errors.phone}</p>}
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={status === 'loading'}
-                                    className="w-full py-4 mt-8 bg-gradient-to-r from-flux-primary to-purple-600 hover:from-flux-primary/90 hover:to-purple-600/90 text-white font-bold rounded-xl shadow-lg shadow-flux-primary/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-                                >
-                                    {status === 'loading' ? (
-                                        <>
-                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            Submitting...
-                                        </>
-                                    ) : (
-                                        'Submit Application'
-                                    )}
-                                </button>
-                            </form>
-                        )}
-                    </motion.div>
-                </div>
-            </section>
 
             {/* FOOTER */}
             {/* FOOTER */}

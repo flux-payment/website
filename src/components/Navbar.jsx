@@ -52,21 +52,21 @@ export default function Navbar() {
 
                 {/* Links */}
                 <div className="hidden md:flex items-center gap-8">
-                    <button onClick={() => scrollToSection('about')} className="text-sm font-medium text-white/70 hover:text-white transition-colors">About</button>
+                    <button onClick={() => scrollToSection('about')} className="text-sm font-medium text-white/70 hover:text-white transition-colors">Features</button>
                     <button onClick={() => scrollToSection('pricing')} className="text-sm font-medium text-white/70 hover:text-white transition-colors">Pricing</button>
-
+                    <button onClick={() => scrollToSection('about')} className="text-sm font-medium text-white/70 hover:text-white transition-colors">About</button>
 
                     <button
-                        onClick={() => scrollToSection('contact')}
-                        className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-sm font-semibold transition-all hover:scale-105 active:scale-95"
+                        onClick={() => window.location.href = '/early-access'}
+                        className="px-5 py-2 rounded-full bg-flux-primary hover:bg-flux-primary/80 border border-flux-primary text-white text-sm font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
                     >
-                        Partner with Us
+                        UNLOCK EARLY ACCESS
                     </button>
                 </div>
 
                 {/* Mobile Menu Button (Simplified for now) */}
                 <div className="md:hidden">
-                    <button onClick={() => scrollToSection('contact')} className="text-sm font-bold text-flux-primary">Join Now</button>
+                    <button onClick={() => window.location.href = '/early-access'} className="text-sm font-bold text-flux-primary">EARLY ACCESS</button>
                 </div>
             </div>
         </motion.nav>
