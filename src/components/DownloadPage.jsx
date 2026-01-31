@@ -130,12 +130,12 @@ export default function DownloadPage() {
                 <a
                     href="#"
                     onClick={handleDownload}
-                    className="inline-flex items-center gap-3 px-8 py-5 rounded-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all hover:scale-105 active:scale-95"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-flux-primary hover:bg-flux-primary/90 text-white font-semibold text-base shadow-lg transition-all"
                 >
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    DOWNLOAD PILOT APP (v1.0)
+                    Download Pilot App (v1.0)
                 </a>
 
                 <button
