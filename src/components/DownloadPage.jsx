@@ -24,7 +24,11 @@ export default function DownloadPage() {
             }
         }
 
-        alert("Download starting... (This is a demo)");
+        // Set secure access cookie
+        document.cookie = "flux_access=granted; path=/; max-age=3600; SameSite=Strict";
+
+        // Trigger secure download
+        window.location.href = "/api/get-apk";
     };
 
     return (
