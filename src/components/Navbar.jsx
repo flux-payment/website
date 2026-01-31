@@ -58,7 +58,7 @@ export default function Navbar() {
 
                     <button
                         onClick={() => window.location.href = '/early-access'}
-                        className="px-5 py-2 rounded-full bg-flux-primary hover:bg-flux-primary/80 border border-flux-primary text-white text-sm font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                        className="px-6 py-2.5 rounded-full bg-flux-primary hover:bg-flux-primary/90 text-white text-sm font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_25px_rgba(99,102,241,0.6)] hover:shadow-[0_0_40px_rgba(99,102,241,0.8)] border border-white/20"
                     >
                         UNLOCK EARLY ACCESS
                     </button>

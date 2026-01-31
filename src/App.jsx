@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import ScannerPage from './components/ScannerPage';
 import PaymentPage from './components/PaymentPage';
@@ -8,9 +8,12 @@ import DownloadPage from './components/DownloadPage';
 import Navbar from './components/Navbar';
 
 function App() {
+  const location = useLocation();
+  const hideNavbarRoutes = ['/early-access'];
+
   return (
     <>
-      <Navbar />
+      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/try" element={<ScannerPage />} />
