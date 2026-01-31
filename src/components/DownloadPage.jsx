@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -6,6 +6,12 @@ export default function DownloadPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const inviteCode = location.state?.code;
+
+    useEffect(() => {
+        if (!inviteCode) {
+            navigate('/early-access');
+        }
+    }, [inviteCode, navigate]);
 
     const handleDownload = async (e) => {
         e.preventDefault();
