@@ -21,7 +21,7 @@ export default function EarlyAccessPage() {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/validate-referral', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/validate-referral`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export default function EarlyAccessPage() {
             });
 
             if (response.ok) {
-                navigate('/download');
+                navigate('/download', { state: { code: inviteCode } });
             } else {
                 const contentType = response.headers.get("content-type");
                 let message = 'Invalid invite code.';

@@ -9,7 +9,7 @@ import Navbar from './components/Navbar';
 
 function App() {
   const location = useLocation();
-  const hideNavbarRoutes = ['/early-access'];
+  const hideNavbarRoutes = ['/early-access', '/download'];
 
   return (
     <>

@@ -1,9 +1,31 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function DownloadPage() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const inviteCode = location.state?.code;
+
+    const handleDownload = async (e) => {
+        e.preventDefault();
+
+        if (inviteCode) {
+            try {
+                await fetch(`${import.meta.env.VITE_BACKEND_URL}/use-referral`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code: inviteCode }),
+                });
+            } catch (error) {
+                console.error('Failed to mark referral code as used:', error);
+            }
+        }
+
+        alert("Download starting... (This is a demo)");
+    };
 
     return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
@@ -54,10 +76,7 @@ export default function DownloadPage() {
 
                 <a
                     href="#"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        alert("Download starting... (This is a demo)");
-                    }}
+                    onClick={handleDownload}
                     className="inline-flex items-center gap-3 px-8 py-5 rounded-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all hover:scale-105 active:scale-95"
                 >
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
