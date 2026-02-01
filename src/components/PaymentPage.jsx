@@ -607,16 +607,15 @@ export default function PaymentPage() {
                                     </motion.div>
                                 </div>
 
-                                {/* Pay Button */}
                                 <motion.button
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.6 }}
-                                    whileHover={isFormValid ? { scale: 1.02 } : {}}
-                                    whileTap={isFormValid ? { scale: 0.98 } : {}}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                     onClick={handlePay}
-                                    disabled={submitting || !isFormValid}
-                                    className={`w-full relative overflow-hidden group py-3.5 rounded-xl shadow-lg transition-all duration-300 ${!isFormValid
+                                    disabled={submitting}
+                                    className={`w-full relative overflow-hidden group py-3.5 rounded-xl shadow-lg transition-all duration-300 ${submitting
                                         ? 'opacity-50 cursor-not-allowed'
                                         : 'shadow-violet-900/20 hover:shadow-violet-900/40'
                                         }`}
