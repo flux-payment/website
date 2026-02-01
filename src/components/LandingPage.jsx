@@ -190,7 +190,7 @@ export default function LandingPage() {
                                 <li className="relative pl-8 border-l border-white/10 pb-8 last:pb-0 last:border-0">
                                     <span className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-flux-primary ring-4 ring-black" />
                                     <h4 className="text-lg font-bold text-white mb-2">04. Partner Settlements (The Payout)</h4>
-                                    <p className="text-gray-400">We handle the financial heavy lifting. Flux consolidates daily sales and disburses Vendor Payouts to our partners on a <strong className="text-white">T+1 cycle</strong>, ensuring their cash flow never stops.</p>
+                                    <p className="text-gray-400">We handle the financial heavy lifting. Flux consolidates daily sales and disburses Vendor Payouts to our partners on a <strong className="text-white">T+2 cycle</strong>, ensuring their cash flow never stops.</p>
                                 </li>
                             </ul>
                         </motion.div>
