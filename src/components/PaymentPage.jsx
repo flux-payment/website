@@ -210,23 +210,33 @@ export default function PaymentPage() {
     }, [contact]);
 
     const handlePay = async () => {
-        // Validate all fields before proceeding
-        const amtErr = validateAmount(amount);
-        const cntErr = validateContact(contact);
-
+        // First mark all fields as touched
         setTouched({ amount: true, contact: true, name: true });
-        setAmountError(amtErr);
-        setContactError(cntErr);
 
-        if (amtErr || cntErr) {
-            // Focus on first error field for better UX
-            if (amtErr) {
-                document.querySelector('input[type="number"]')?.focus();
-            } else if (cntErr) {
-                document.querySelector('input[type="tel"]')?.focus();
+        // Then validate on next tick to ensure touched state is updated
+        setTimeout(() => {
+            const amtErr = validateAmount(amount);
+            const cntErr = validateContact(contact);
+
+            setAmountError(amtErr);
+            setContactError(cntErr);
+
+            if (amtErr || cntErr) {
+                // Focus on first error field for better UX
+                if (amtErr) {
+                    document.querySelector('input[type="number"]')?.focus();
+                } else if (cntErr) {
+                    document.querySelector('input[type="tel"]')?.focus();
+                }
+                return;
             }
-            return;
-        }
+
+            // Only proceed with payment if no errors
+            proceedWithPayment();
+        }, 0);
+    };
+
+    const proceedWithPayment = async () => {
 
         setSubmitting(true);
 
