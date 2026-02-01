@@ -470,7 +470,7 @@ export default function PaymentPage() {
                                         ? 'text-red-400'
                                         : 'text-gray-500 group-focus-within:text-violet-400'
                                         }`}>
-                                        Amount to Pay
+                                        Amount to Pay <span className="text-red-400">*</span>
                                     </label>
                                     <div className="relative flex items-center justify-center">
                                         <span className="text-3xl font-light text-gray-600 mr-1 mb-1">₹</span>
@@ -518,7 +518,7 @@ export default function PaymentPage() {
                                     >
                                         <label className={`text-[10px] uppercase ml-3 font-bold tracking-widest transition-colors ${touched.contact && contactError ? 'text-red-400' : 'text-gray-500'
                                             }`}>
-                                            Your Mobile
+                                            Your Mobile <span className="text-red-400">*</span>
                                         </label>
                                         <div className={`relative group border rounded-xl transition-all duration-300 ${touched.contact && contactError
                                             ? 'border-red-500/50 bg-red-500/5'
