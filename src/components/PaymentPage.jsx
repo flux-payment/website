@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -63,7 +63,7 @@ const MerchantAvatar = ({ name }) => {
                 transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
                 className="relative z-10"
             >
-                <div className={`w-20 h-20 bg-gradient-to-br ${gradient} rounded-[2rem] flex items-center justify-center shadow-2xl shadow-black/50 ring-4 ring-white/10 relative overflow-hidden transform transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3`}>
+                <div className={`w-20 h-20 bg-gradient-to-br ${gradient} rounded-[2rem] flex items-center justify-center shadow-2xl shadow-black/50 ring-4 ring-white/10 relative overflow-hidden transform transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3 translate-z-0`}>
 
                     {/* Animated Noise Texture Overlay */}
                     <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
@@ -181,33 +181,33 @@ export default function PaymentPage() {
     };
 
     // Handle amount change with validation
-    const handleAmountChange = (e) => {
+    const handleAmountChange = useCallback((e) => {
         const val = e.target.value;
         setAmount(val);
         if (touched.amount) {
             setAmountError(validateAmount(val));
         }
-    };
+    }, [touched.amount]);
 
     // Handle contact change with validation
-    const handleContactChange = (e) => {
+    const handleContactChange = useCallback((e) => {
         const val = e.target.value.replace(/\D/g, '').slice(0, 10);
         setContact(val);
         if (touched.contact) {
             setContactError(validateContact(val));
         }
-    };
+    }, [touched.contact]);
 
     // Handle blur events
-    const handleAmountBlur = () => {
+    const handleAmountBlur = useCallback(() => {
         setTouched(prev => ({ ...prev, amount: true }));
         setAmountError(validateAmount(amount));
-    };
+    }, [amount]);
 
-    const handleContactBlur = () => {
+    const handleContactBlur = useCallback(() => {
         setTouched(prev => ({ ...prev, contact: true }));
         setContactError(validateContact(contact));
-    };
+    }, [contact]);
 
     const handlePay = async () => {
         // Validate all fields before proceeding
@@ -351,7 +351,7 @@ export default function PaymentPage() {
     const isFormValid = !amountError && !contactError && amount && contact.length === 10;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-violet-950/20 flex flex-col items-center p-4 relative overflow-y-auto selection:bg-violet-500/30 selection:text-violet-200">
+        <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-violet-950/20 flex flex-col items-center p-4 relative overflow-hidden selection:bg-violet-500/30 selection:text-violet-200 touch-action-manipulation">
             {/* Animated Background Glows - Optimized for Android */}
             <motion.div
                 animate={{
