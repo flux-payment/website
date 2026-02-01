@@ -93,12 +93,8 @@ const MerchantAvatar = ({ name }) => {
                 </div>
             </motion.div>
 
-            {/* Background Glow */}
-            <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className={`absolute inset-0 bg-gradient-to-br ${gradient} blur-2xl opacity-60 -z-10 rounded-full`}
-            />
+            {/* Background Glow - Simplified for performance */}
+            <div className={`absolute inset-0 -z-10 rounded-full bg-gradient-to-br ${gradient} blur-2xl opacity-40`} />
         </div>
     );
 };
@@ -356,33 +352,26 @@ export default function PaymentPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-violet-950/20 flex flex-col items-center p-4 relative overflow-y-auto selection:bg-violet-500/30 selection:text-violet-200">
-            {/* Animated Background Glows */}
-            <motion.div
-                animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.4, 0.25, 0.4]
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="fixed top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-violet-600/25 rounded-full blur-[140px] pointer-events-none"
-            />
+            {/* Animated Background Glows - Optimized for Android */}
             <motion.div
                 animate={{
                     scale: [1, 1.1, 1],
-                    opacity: [0.3, 0.4, 0.3]
+                    opacity: [0.3, 0.2, 0.3]
                 }}
-                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="fixed bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-indigo-600/25 rounded-full blur-[140px] pointer-events-none"
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className="fixed top-[-20%] left-[-10%] will-change-transform w-[60vw] h-[60vw] bg-violet-600/20 rounded-full blur-[120px] pointer-events-none"
             />
-
-            {/* Center accent glow */}
             <motion.div
                 animate={{
-                    opacity: [0.15, 0.25, 0.15],
-                    scale: [1, 1.05, 1]
+                    scale: [1, 1.08, 1],
+                    opacity: [0.25, 0.3, 0.25]
                 }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] bg-purple-500/20 rounded-full blur-[100px] pointer-events-none"
+                transition={{ duration: 15, repeat: Infinity, ease: "linear", delay: 2 }}
+                className="fixed bottom-[-20%] right-[-10%] will-change-transform w-[60vw] h-[60vw] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"
             />
+
+            {/* Center accent glow - Less intensive */}
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] bg-purple-500/15 rounded-full blur-[100px] pointer-events-none opacity-20" />
 
             <div className="w-full max-w-md flex flex-col items-center relative z-10 py-4 md:py-6 gap-4">
 
@@ -487,12 +476,12 @@ export default function PaymentPage() {
                                         <span className="text-3xl font-light text-gray-600 mr-1 mb-1">₹</span>
                                         <input
                                             type="number"
+                                            inputMode="decimal"
                                             value={amount}
                                             onChange={handleAmountChange}
                                             onBlur={handleAmountBlur}
                                             placeholder="0"
                                             className="w-full bg-transparent border-none p-0 text-5xl font-header font-bold text-white placeholder-gray-800 text-center focus:outline-none focus:ring-0"
-                                            autoFocus
                                         />
                                         {touched.amount && !amountError && (
                                             <motion.div
