@@ -219,6 +219,12 @@ export default function PaymentPage() {
         setContactError(cntErr);
 
         if (amtErr || cntErr) {
+            // Focus on first error field for better UX
+            if (amtErr) {
+                document.querySelector('input[type="number"]')?.focus();
+            } else if (cntErr) {
+                document.querySelector('input[type="tel"]')?.focus();
+            }
             return;
         }
 
@@ -497,9 +503,14 @@ export default function PaymentPage() {
                                         {touched.amount && amountError && (
                                             <motion.div
                                                 initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: 'auto' }}
+                                                animate={{
+                                                    opacity: 1,
+                                                    height: 'auto',
+                                                    x: [0, -10, 10, -10, 10, 0]
+                                                }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="flex items-center gap-2 mt-3 text-red-400 text-xs"
+                                                transition={{ x: { duration: 0.4 } }}
+                                                className="flex items-center gap-2 mt-3 text-red-400 text-xs font-medium"
                                             >
                                                 <AlertCircle className="w-3 h-3" />
                                                 <span>{amountError}</span>
@@ -551,9 +562,14 @@ export default function PaymentPage() {
                                             {touched.contact && contactError && (
                                                 <motion.div
                                                     initial={{ opacity: 0, height: 0 }}
-                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        height: 'auto',
+                                                        x: [0, -10, 10, -10, 10, 0]
+                                                    }}
                                                     exit={{ opacity: 0, height: 0 }}
-                                                    className="flex items-center gap-2 ml-3 text-red-400 text-xs"
+                                                    transition={{ x: { duration: 0.4 } }}
+                                                    className="flex items-center gap-2 ml-3 text-red-400 text-xs font-medium"
                                                 >
                                                     <AlertCircle className="w-3 h-3" />
                                                     <span>{contactError}</span>
