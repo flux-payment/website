@@ -25,8 +25,11 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
         ? transaction.net_amount
         : transaction.amount;
 
-    const date = new Date(transaction.created_at * 1000);
-    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+    // Use backend-provided formatted date or fallback to manual formatting
+    const formattedDate = transaction.captured_at_formatted || transaction.created_at_formatted || (() => {
+        const date = new Date(transaction.created_at * 1000);
+        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+    })();
 
     const DetailRow = ({ label, value }) => (
         <div className="flex justify-between items-center py-2">
@@ -128,8 +131,8 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
                                     <DetailRow label="Net Settlement" value={`₹${settlementData.net_settlement}`} />
                                     <div className="flex justify-end mt-2">
                                         <span className={`text-xs font-bold tracking-wider ${settlementData.status?.toLowerCase() === 'settled'
-                                                ? 'text-green-400'
-                                                : 'text-orange-400'
+                                            ? 'text-green-400'
+                                            : 'text-orange-400'
                                             }`}>
                                             STATUS: {(settlementData.status || 'PENDING').toUpperCase()}
                                         </span>
