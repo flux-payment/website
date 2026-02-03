@@ -11,6 +11,7 @@ import { useMerchantAuth } from '../../contexts/MerchantAuthContext';
 import { merchantApi } from '../../services/merchantApi';
 import MerchantDrawer from './MerchantDrawer';
 import TransactionDetailsModal from './TransactionDetailsModal';
+import PWAInstallPrompt from './PWAInstallPrompt';
 
 const MerchantDashboard = () => {
     const navigate = useNavigate();
@@ -392,25 +393,25 @@ const MerchantDashboard = () => {
                             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-3 gap-4 text-center">
-                            <div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 text-center">
+                            <div className="pb-4 sm:pb-0 border-b sm:border-b-0 border-white/10">
                                 <div className="text-2xl font-bold text-white">₹{balance?.lifetime_total || 0}</div>
                                 <div className="text-sm text-gray-400 mt-1">Total Earned</div>
                             </div>
-                            <div className="border-x border-white/10">
+                            <div className="py-4 sm:py-0 border-b sm:border-b-0 sm:border-x border-white/10">
                                 <div className="text-2xl font-bold text-green-400">₹{balance?.unsettled_amount || 0}</div>
                                 <div className="text-sm text-gray-400 mt-1">Balance</div>
                             </div>
-                            <div>
+                            <div className="pt-4 sm:pt-0">
                                 <div className="text-2xl font-bold text-gray-300">₹{balance?.settled_amount || 0}</div>
                                 <div className="text-sm text-gray-400 mt-1">Settled</div>
                             </div>
                         </div>
                     )}
-                </motion.div>
+                </motion.div >
 
                 {/* Recent Transactions */}
-                <motion.div
+                < motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
@@ -426,51 +427,57 @@ const MerchantDashboard = () => {
                         </button>
                     </div>
 
-                    {isLoadingTxns ? (
-                        <div className="glass-card rounded-2xl p-8 flex justify-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                        </div>
-                    ) : transactions.length === 0 ? (
-                        <div className="glass-card rounded-2xl p-8 text-center">
-                            <Clock className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                            <p className="text-gray-400">No transactions yet</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-2">
-                            {transactions.map((txn, idx) => (
-                                <div
-                                    key={idx}
-                                    onClick={() => setSelectedTransaction(txn)}
-                                    className="glass-card rounded-2xl p-4 hover:bg-white/10 transition-colors cursor-pointer"
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${txn.status === 'captured' ? 'bg-green-500/20' : 'bg-red-500/20'
-                                                }`}>
-                                                <TrendingUp className={`w-5 h-5 ${txn.status === 'captured' ? 'text-green-400' : 'text-red-400'
-                                                    }`} />
+                    {
+                        isLoadingTxns ? (
+                            <div className="glass-card rounded-2xl p-8 flex justify-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                            </div>
+                        ) : transactions.length === 0 ? (
+                            <div className="glass-card rounded-2xl p-8 text-center">
+                                <Clock className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                                <p className="text-gray-400">No transactions yet</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-2">
+                                {transactions.map((txn, idx) => (
+                                    <div
+                                        key={idx}
+                                        onClick={() => setSelectedTransaction(txn)}
+                                        className="glass-card rounded-2xl p-4 hover:bg-white/10 transition-colors cursor-pointer"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${txn.status === 'captured' ? 'bg-green-500/20' : 'bg-red-500/20'
+                                                    }`}>
+                                                    <TrendingUp className={`w-5 h-5 ${txn.status === 'captured' ? 'text-green-400' : 'text-red-400'
+                                                        }`} />
+                                                </div>
+                                                <div>
+                                                    <div className="font-semibold">{txn.user_name || txn.user_contact || 'Guest'}</div>
+                                                    <div className="text-xs text-gray-500 font-['Source_Code_Pro'] flex items-center gap-2">
+                                                        <span>{txn.captured_at_formatted || txn.created_at_formatted}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div className="font-semibold">{txn.user_name || txn.user_contact || 'Guest'}</div>
-                                                <div className="text-xs text-gray-500 font-['Source_Code_Pro']">
-                                                    {txn.captured_at_formatted || txn.created_at_formatted}
+                                            <div className="text-right">
+                                                <div className={`font-bold text-lg ${txn.status === 'captured' ? 'text-green-400' : 'text-gray-400'}`}>
+                                                    +₹{txn.net_amount || txn.amount}
+                                                </div>
+                                                <div className="text-xs text-gray-500 font-['Source_Code_Pro'] uppercase mt-0.5">
+                                                    {txn.method || 'UPI'}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={`font-bold text-lg ${txn.status === 'captured' ? 'text-green-400' : 'text-gray-400'
-                                            }`}>
-                                            +₹{txn.net_amount || txn.amount}
-                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </motion.div>
-            </div>
+                                ))}
+                            </div>
+                        )
+                    }
+                </motion.div >
+            </div >
 
             {/* Drawer */}
-            <MerchantDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+            < MerchantDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
 
             {/* Transaction Details Modal */}
             {selectedTransaction && (
@@ -480,7 +487,10 @@ const MerchantDashboard = () => {
                     role="merchant"
                 />
             )}
-        </div>
+
+            {/* PWA Install Prompt */}
+            <PWAInstallPrompt />
+        </div >
     );
 };
 

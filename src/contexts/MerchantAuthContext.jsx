@@ -63,7 +63,7 @@ export const MerchantAuthProvider = ({ children }) => {
             // merchant_id (6-digit) is used for display
             const merchantUuid = data.id; // UUID for API authentication
             const merchantDisplayId = data.merchant_id || data.client_id; // 6-digit code
-            const merchantName = data.business_name || data.name || 'Merchant';
+            const merchantName = data.display_name || data.business_name || data.name || 'Merchant';
 
             // Store in state and localStorage
             setToken(data.token);
