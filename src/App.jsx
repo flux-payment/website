@@ -35,6 +35,7 @@ function App() {
 
         {/* Protected Merchant Routes */}
         <Route path="/merchant" element={<ProtectedRoute />}>
+          <Route index element={<MerchantDashboard />} />
           <Route path="dashboard" element={<MerchantDashboard />} />
           <Route path="transactions" element={<AllTransactions />} />
           <Route path="profile" element={<MerchantProfile />} />
