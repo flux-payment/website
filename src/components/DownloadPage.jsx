@@ -17,6 +17,12 @@ export default function DownloadPage() {
     const handleDownload = async (e) => {
         e.preventDefault();
 
+        // If Web App is selected, redirect to merchant login
+        if (selectedPlatform === 'webapp') {
+            navigate('/merchant/login');
+            return;
+        }
+
         if (selectedPlatform !== 'android') {
             return; // Only allow Android downloads for now
         }
@@ -111,6 +117,23 @@ export default function DownloadPage() {
                             </div>
                         </button>
 
+                        {/* Web App - Available */}
+                        <button
+                            onClick={() => setSelectedPlatform('webapp')}
+                            className={`w-full sm:w-auto flex flex-col items-center gap-3 px-6 sm:px-8 py-5 sm:py-6 rounded-2xl border-2 transition-all ${selectedPlatform === 'webapp'
+                                ? 'bg-blue-500/10 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+                                : 'bg-white/5 border-white/10 hover:border-blue-500/50'
+                                }`}
+                        >
+                            <svg className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                            </svg>
+                            <div className="text-center">
+                                <p className="font-bold text-white mb-1">Web App</p>
+                                <p className="text-xs text-blue-500">Merchant Dashboard</p>
+                            </div>
+                        </button>
+
                         {/* iOS - Coming Soon */}
                         <button
                             disabled
@@ -132,10 +155,21 @@ export default function DownloadPage() {
                     onClick={handleDownload}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-flux-primary hover:bg-flux-primary/90 text-white font-semibold text-base shadow-lg transition-all"
                 >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Download Pilot App (v1.0)
+                    {selectedPlatform === 'webapp' ? (
+                        <>
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                            Go to Merchant Dashboard
+                        </>
+                    ) : (
+                        <>
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Download Pilot App (v1.0)
+                        </>
+                    )}
                 </a>
 
                 <button
