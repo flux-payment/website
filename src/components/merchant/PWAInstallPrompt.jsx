@@ -1,49 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, X } from 'lucide-react';
+import { Download, X, Share } from 'lucide-react';
 
 const PWAInstallPrompt = () => {
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [showPrompt, setShowPrompt] = useState(false);
+    const [isIOS, setIsIOS] = useState(false);
+    const [isStandalone, setIsStandalone] = useState(false);
 
     useEffect(() => {
+        // Detect iOS
+        const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        setIsIOS(iOS);
+
+        // Check if already in standalone mode
+        const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
+        setIsStandalone(standalone);
+
         // Check if user has already dismissed the prompt in this session
         const hasSeenPrompt = sessionStorage.getItem('pwa_install_prompt_seen');
 
-        const handleBeforeInstallPrompt = (e) => {
-            // Prevent the default browser install prompt
-            e.preventDefault();
+        if (standalone || hasSeenPrompt) {
+            return; // Don't show if already installed or dismissed
+        }
 
-            // Store the event for later use
-            setDeferredPrompt(e);
-
-            // Show our custom prompt if user hasn't seen it this session
-            if (!hasSeenPrompt) {
+        if (iOS) {
+            // For iOS, show manual instructions after a delay
+            setTimeout(() => {
+                setShowPrompt(true);
+            }, 2000);
+        } else {
+            // For Chrome/Edge/Android, use beforeinstallprompt event
+            const handleBeforeInstallPrompt = (e) => {
+                e.preventDefault();
+                setDeferredPrompt(e);
                 setTimeout(() => {
                     setShowPrompt(true);
-                }, 2000); // Show after 2 seconds on dashboard
-            }
-        };
+                }, 2000);
+            };
 
-        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-        return () => {
-            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-        };
+            return () => {
+                window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            };
+        }
     }, []);
 
     const handleInstall = async () => {
         if (!deferredPrompt) return;
 
-        // Show the browser's install prompt
         deferredPrompt.prompt();
-
-        // Wait for the user's response
         const { outcome } = await deferredPrompt.userChoice;
 
         console.log(`User ${outcome === 'accepted' ? 'accepted' : 'dismissed'} the install prompt`);
 
-        // Clear the prompt
         setDeferredPrompt(null);
         setShowPrompt(false);
         sessionStorage.setItem('pwa_install_prompt_seen', 'true');
@@ -53,6 +65,8 @@ const PWAInstallPrompt = () => {
         setShowPrompt(false);
         sessionStorage.setItem('pwa_install_prompt_seen', 'true');
     };
+
+    if (isStandalone) return null;
 
     return (
         <AnimatePresence>
@@ -68,29 +82,47 @@ const PWAInstallPrompt = () => {
                         <div className="bg-black rounded-2xl p-4">
                             <div className="flex items-start gap-3">
                                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center flex-shrink-0">
-                                    <Download className="w-6 h-6 text-white" />
+                                    {isIOS ? (
+                                        <Share className="w-6 h-6 text-white" />
+                                    ) : (
+                                        <Download className="w-6 h-6 text-white" />
+                                    )}
                                 </div>
 
                                 <div className="flex-1 min-w-0">
                                     <h3 className="font-bold text-white font-['Plus_Jakarta_Sans'] mb-1">
                                         Install Flux Dashboard
                                     </h3>
-                                    <p className="text-sm text-gray-300 font-['Plus_Jakarta_Sans'] mb-3">
-                                        Add to your home screen for quick access
-                                    </p>
+
+                                    {isIOS ? (
+                                        <div className="text-sm text-gray-300 font-['Plus_Jakarta_Sans'] mb-3 space-y-1">
+                                            <p>Add to your home screen:</p>
+                                            <ol className="list-decimal list-inside space-y-0.5 text-xs">
+                                                <li>Tap <Share className="w-3 h-3 inline mx-0.5" /> Share button below</li>
+                                                <li>Scroll and tap "Add to Home Screen"</li>
+                                                <li>Tap "Add"</li>
+                                            </ol>
+                                        </div>
+                                    ) : (
+                                        <p className="text-sm text-gray-300 font-['Plus_Jakarta_Sans'] mb-3">
+                                            Add to your home screen for quick access
+                                        </p>
+                                    )}
 
                                     <div className="flex gap-2">
-                                        <button
-                                            onClick={handleInstall}
-                                            className="px-4 py-2 bg-white text-black font-semibold rounded-lg text-sm hover:bg-gray-100 transition-colors font-['Plus_Jakarta_Sans']"
-                                        >
-                                            Install App
-                                        </button>
+                                        {!isIOS && (
+                                            <button
+                                                onClick={handleInstall}
+                                                className="px-4 py-2 bg-white text-black font-semibold rounded-lg text-sm hover:bg-gray-100 transition-colors font-['Plus_Jakarta_Sans']"
+                                            >
+                                                Install App
+                                            </button>
+                                        )}
                                         <button
                                             onClick={handleDismiss}
                                             className="px-4 py-2 bg-white/10 text-white font-semibold rounded-lg text-sm hover:bg-white/20 transition-colors font-['Plus_Jakarta_Sans']"
                                         >
-                                            Not Now
+                                            {isIOS ? 'Got it' : 'Not Now'}
                                         </button>
                                     </div>
                                 </div>
