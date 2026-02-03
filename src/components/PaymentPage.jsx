@@ -108,6 +108,7 @@ export default function PaymentPage() {
     const [name, setName] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [isAmountLocked, setIsAmountLocked] = useState(false);
 
     // Validation states
     const [amountError, setAmountError] = useState('');
@@ -118,14 +119,53 @@ export default function PaymentPage() {
         const params = new URLSearchParams(window.location.search);
         const qr = params.get('qr');
         const sig = params.get('sig');
+        const merchantCode = params.get('m');
+        const amt = params.get('amount') || params.get('a') || params.get('am');
 
-        if (qr && sig) {
+        if (merchantCode) {
+            // New Unsigned Flow
+            fetchMerchantInfoByCode(merchantCode, amt);
+        } else if (qr && sig) {
+            // Legacy Signed Flow
             fetchMerchantInfo(qr, sig);
         } else {
             setError("Invalid payment link. Please scan the QR code to pay.");
             setLoading(false);
         }
     }, []);
+
+    const fetchMerchantInfoByCode = async (code, amt) => {
+        try {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL;
+            const { data } = await axios.get(`${backendUrl}/pay/info`, {
+                params: { m: code, amount: amt },
+                headers: {
+                    'ngrok-skip-browser-warning': 'true',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!data || !data.merchant_name) {
+                console.error("Invalid merchant data received:", data);
+                throw new Error("Invalid merchant data received from server.");
+            }
+
+            setMerchant(data);
+            if (data.amount > 0) {
+                setAmount((data.amount / 100).toString());
+                setIsAmountLocked(true);
+            } else if (amt) {
+                // If backend didn't return amount but url had it, set it manually
+                setAmount((parseFloat(amt) / 100).toString());
+                setIsAmountLocked(true);
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Merchant not found or server error.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchMerchantInfo = async (qr, sig) => {
         try {
@@ -391,30 +431,7 @@ export default function PaymentPage() {
 
             <div className="w-full max-w-md flex flex-col items-center relative z-10 py-4 md:py-6 gap-4">
 
-                {/* Header Brand */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="flex flex-row items-center gap-2 relative z-50"
-                >
-                    <motion.img
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-                        src="/flux_logo.png"
-                        alt="Flux Logo"
-                        className="w-7 h-7 md:w-8 md:h-8 drop-shadow-lg"
-                    />
-                    <motion.h1
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-2xl md:text-3xl font-header font-black tracking-tighter text-white drop-shadow-lg"
-                    >
-                        FLUX
-                    </motion.h1>
-                </motion.div>
+
 
                 <AnimatePresence mode="wait">
                     {loading ? (
@@ -497,7 +514,8 @@ export default function PaymentPage() {
                                             onChange={handleAmountChange}
                                             onBlur={handleAmountBlur}
                                             placeholder="0"
-                                            className="w-full bg-transparent border-none p-0 text-5xl font-header font-bold text-white placeholder-gray-800 text-center focus:outline-none focus:ring-0"
+                                            disabled={isAmountLocked}
+                                            className={`w-full bg-transparent border-none p-0 text-5xl font-header font-bold text-white placeholder-gray-800 text-center focus:outline-none focus:ring-0 ${isAmountLocked ? 'opacity-80 cursor-not-allowed' : ''}`}
                                         />
                                         {touched.amount && !amountError && (
                                             <motion.div

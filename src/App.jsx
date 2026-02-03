@@ -6,22 +6,45 @@ import PaymentPage from './components/PaymentPage';
 import EarlyAccessPage from './components/EarlyAccessPage';
 import DownloadPage from './components/DownloadPage';
 import Navbar from './components/Navbar';
+import MerchantLogin from './components/merchant/MerchantLogin';
+import MerchantDashboard from './components/merchant/MerchantDashboard';
+import AllTransactions from './components/merchant/AllTransactions';
+import MerchantProfile from './components/merchant/MerchantProfile';
+import MerchantSupport from './components/merchant/MerchantSupport';
+import NotFoundPage from './components/NotFoundPage';
+import ProtectedRoute from './components/merchant/ProtectedRoute';
+import { MerchantAuthProvider } from './contexts/MerchantAuthContext';
 
 function App() {
   const location = useLocation();
-  const hideNavbarRoutes = ['/early-access', '/download'];
+  const hideNavbarRoutes = ['/early-access', '/download', '/merchant/login', '/merchant/dashboard', '/merchant/transactions', '/pay'];
+  const isMerchantRoute = location.pathname.startsWith('/merchant');
 
   return (
-    <>
-      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+    <MerchantAuthProvider>
+      {!hideNavbarRoutes.includes(location.pathname) && !isMerchantRoute && <Navbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/try" element={<ScannerPage />} />
         <Route path="/pay" element={<PaymentPage />} />
         <Route path="/early-access" element={<EarlyAccessPage />} />
         <Route path="/download" element={<DownloadPage />} />
+
+        {/* Merchant Routes */}
+        <Route path="/merchant/login" element={<MerchantLogin />} />
+
+        {/* Protected Merchant Routes */}
+        <Route path="/merchant" element={<ProtectedRoute />}>
+          <Route path="dashboard" element={<MerchantDashboard />} />
+          <Route path="transactions" element={<AllTransactions />} />
+          <Route path="profile" element={<MerchantProfile />} />
+          <Route path="support" element={<MerchantSupport />} />
+        </Route>
+
+        {/* 404 Route */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </>
+    </MerchantAuthProvider>
   );
 }
 

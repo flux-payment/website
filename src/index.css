@@ -1,8 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Unbounded:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Unbounded:wght@300;400;500;600;700;900&family=Source+Code+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Merchant Dashboard Design Tokens */
+:root {
+  /* Gradients */
+  --gradient-main: linear-gradient(135deg, #000000, #0C1938, #120826);
+  --gradient-card-blue: linear-gradient(135deg, rgba(30, 58, 138, 0.5), rgba(30, 64, 175, 0.3));
+
+  /* Background Colors */
+  --color-bg-primary: #000000;
+  --color-bg-card: rgba(255, 255, 255, 0.05);
+  --color-bg-card-elevated: #1E1E1E;
+
+  /* Border Colors */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+
+  /* Accent Colors */
+  --color-blue-primary: #3B82F6;
+  --color-blue-accent: #60A5FA;
+  --color-green-success: #10B981;
+  --color-green-accent: #34D399;
+  --color-red-error: #EF4444;
+
+  /* Text Colors */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-text-tertiary: rgba(255, 255, 255, 0.4);
+  --color-text-muted: #9CA3AF;
+}
 
 @layer base {
   body {
@@ -25,6 +54,17 @@
 @layer utilities {
   .animate-heartbeat {
     animation: heartbeat 6s ease-in-out infinite;
+  }
+
+  /* Merchant Dashboard Utilities */
+  .glass-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    backdrop-filter: blur(10px);
+  }
+
+  .merchant-gradient-bg {
+    background: var(--gradient-main);
   }
 }
 
