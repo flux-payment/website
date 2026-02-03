@@ -56,6 +56,14 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: '100%', opacity: 0 }}
                     transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                    drag="y"
+                    dragConstraints={{ top: 0, bottom: 0 }}
+                    dragElastic={{ top: 0, bottom: 0.5 }}
+                    onDragEnd={(e, info) => {
+                        if (info.offset.y > 100) {
+                            onClose();
+                        }
+                    }}
                     className="relative bg-[#1A1A1A] rounded-t-3xl sm:rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6"
                 >
                     {/* Handle bar (mobile) */}
