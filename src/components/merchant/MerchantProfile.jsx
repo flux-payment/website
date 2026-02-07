@@ -13,6 +13,13 @@ const MerchantProfile = () => {
     const navigate = useNavigate();
     const { merchantId, merchantCode, merchantName, logout } = useMerchantAuth();
     const [profileData, setProfileData] = useState(null);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [passwordError, setPasswordError] = useState('');
+    const [passwordSuccess, setPasswordSuccess] = useState(false);
 
     useEffect(() => {
         if (merchantId) {
@@ -32,6 +39,45 @@ const MerchantProfile = () => {
     const handleLogout = () => {
         logout();
         navigate('/merchant/login');
+    };
+
+    const handlePasswordChange = async () => {
+        // Validation
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            setPasswordError('All fields are required');
+            return;
+        }
+        if (newPassword.length < 8) {
+            setPasswordError('New password must be at least 8 characters');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setPasswordError('New passwords do not match');
+            return;
+        }
+        if (oldPassword === newPassword) {
+            setPasswordError('New password must be different from old password');
+            return;
+        }
+
+        setIsChangingPassword(true);
+        setPasswordError('');
+
+        try {
+            await merchantApi.changePassword(merchantId, oldPassword, newPassword);
+            setPasswordSuccess(true);
+            setTimeout(() => {
+                setShowPasswordModal(false);
+                setPasswordSuccess(false);
+                setOldPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+            }, 2000);
+        } catch (error) {
+            setPasswordError(error.message || 'Failed to change password');
+        } finally {
+            setIsChangingPassword(false);
+        }
     };
 
     const InfoCard = ({ label, value, icon: Icon, isStatus }) => (
@@ -140,7 +186,10 @@ const MerchantProfile = () => {
                         SECURITY
                     </h2>
 
-                    <button className="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors group">
+                    <button
+                        onClick={() => setShowPasswordModal(true)}
+                        className="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors group"
+                    >
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
                                 <Lock className="w-5 h-5 text-purple-400" />
@@ -164,6 +213,100 @@ const MerchantProfile = () => {
                     <LogOut className="w-5 h-5" />
                     Sign Out
                 </motion.button>
+
+                {/* Password Change Modal */}
+                {showPasswordModal && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-gradient-to-b from-gray-900 to-black border border-white/10 rounded-3xl p-6 max-w-md w-full"
+                        >
+                            <h2 className="text-2xl font-bold mb-6 font-['Unbounded']">Change Password</h2>
+
+                            {passwordSuccess ? (
+                                <div className="text-center py-8">
+                                    <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <CheckCircle2 className="w-8 h-8 text-green-400" />
+                                    </div>
+                                    <p className="text-green-400 font-medium">Password changed successfully!</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="space-y-4 mb-6">
+                                        <div>
+                                            <label className="block text-sm text-white/60 mb-2 font-['Plus_Jakarta_Sans']">
+                                                Current Password
+                                            </label>
+                                            <input
+                                                type="password"
+                                                value={oldPassword}
+                                                onChange={(e) => setOldPassword(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-['Plus_Jakarta_Sans']"
+                                                placeholder="Enter current password"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm text-white/60 mb-2 font-['Plus_Jakarta_Sans']">
+                                                New Password
+                                            </label>
+                                            <input
+                                                type="password"
+                                                value={newPassword}
+                                                onChange={(e) => setNewPassword(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-['Plus_Jakarta_Sans']"
+                                                placeholder="Enter new password (min 8 chars)"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm text-white/60 mb-2 font-['Plus_Jakarta_Sans']">
+                                                Confirm New Password
+                                            </label>
+                                            <input
+                                                type="password"
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-['Plus_Jakarta_Sans']"
+                                                placeholder="Confirm new password"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {passwordError && (
+                                        <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
+                                            {passwordError}
+                                        </div>
+                                    )}
+
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => {
+                                                setShowPasswordModal(false);
+                                                setOldPassword('');
+                                                setNewPassword('');
+                                                setConfirmPassword('');
+                                                setPasswordError('');
+                                            }}
+                                            disabled={isChangingPassword}
+                                            className="flex-1 py-3 border border-white/20 rounded-xl hover:bg-white/5 transition-colors font-medium"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            onClick={handlePasswordChange}
+                                            disabled={isChangingPassword}
+                                            className="flex-1 py-3 bg-blue-500 rounded-xl hover:bg-blue-600 transition-colors font-bold disabled:opacity-50"
+                                        >
+                                            {isChangingPassword ? 'Updating...' : 'Update Password'}
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </motion.div>
+                    </div>
+                )}
             </div>
         </div>
     );

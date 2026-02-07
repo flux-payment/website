@@ -94,4 +94,21 @@ export const merchantApi = {
         if (!response.ok) throw new Error('Failed to create ticket');
         return response.json();
     },
+
+    // Change Password
+    changePassword: async (id, oldPassword, newPassword) => {
+        const response = await fetch(`${API_BASE}/merchants/${id}/change-password`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                old_password: oldPassword,
+                new_password: newPassword,
+            }),
+        });
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error || 'Failed to change password');
+        }
+        return response.json();
+    },
 };
