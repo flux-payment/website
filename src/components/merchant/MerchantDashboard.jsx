@@ -24,6 +24,8 @@ const MerchantDashboard = () => {
     const [isLoadingTxns, setIsLoadingTxns] = useState(false);
     const [includeAmount, setIncludeAmount] = useState(false);
     const [amount, setAmount] = useState('');
+    const [percentageMarkup, setPercentageMarkup] = useState(0);
+    const [customPercentage, setCustomPercentage] = useState('');
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const qrCanvasRef = useRef(null);
@@ -58,7 +60,13 @@ const MerchantDashboard = () => {
     const fetchQR = async () => {
         setIsLoadingQR(true);
         try {
-            const amountInPaise = includeAmount && amount ? parseFloat(amount) * 100 : null;
+            let amountInPaise = null;
+            if (includeAmount && amount) {
+                const baseAmount = parseFloat(amount);
+                // Apply markup percentage
+                const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
+                amountInPaise = Math.round(finalAmount * 100);
+            }
             const data = await merchantApi.getQR(merchantId, amountInPaise);
             setQrData(data);
         } catch (err) {
@@ -95,7 +103,12 @@ const MerchantDashboard = () => {
     const getQRUrl = () => {
         // Use the new simplified format: /pay?m=MERCHANT_CODE[&amount=...]
         const baseUrl = import.meta.env.VITE_FRONTEND_URL;
-        const amountParam = includeAmount && amount ? `&amount=${parseFloat(amount) * 100}` : '';
+        let amountParam = '';
+        if (includeAmount && amount) {
+            const baseAmount = parseFloat(amount);
+            const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
+            amountParam = `&amount=${Math.round(finalAmount * 100)}`;
+        }
         return `${baseUrl}/pay?m=${merchantCode}${amountParam}`;
     };
 
@@ -318,13 +331,91 @@ const MerchantDashboard = () => {
                         </div>
 
                         {includeAmount && (
-                            <input
-                                type="number"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                                placeholder="Enter amount"
-                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-['Plus_Jakarta_Sans'] text-lg"
-                            />
+                            <>
+                                <input
+                                    type="number"
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    placeholder="Enter amount"
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-['Plus_Jakarta_Sans'] text-lg"
+                                />
+
+                                {/* Percentage Markup Section */}
+                                {amount && (
+                                    <div className="mt-4 space-y-3">
+                                        <label className="text-xs text-gray-400 font-semibold uppercase tracking-wide">
+                                            Add Markup (Optional)
+                                        </label>
+
+                                        {/* Quick Select Buttons */}
+                                        <div className="flex gap-2">
+                                            {[3, 5, 10, 18].map((percent) => (
+                                                <button
+                                                    key={percent}
+                                                    onClick={() => {
+                                                        setPercentageMarkup(percent);
+                                                        setCustomPercentage('');
+                                                    }}
+                                                    className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all ${percentageMarkup === percent && !customPercentage
+                                                            ? 'bg-blue-500 text-white'
+                                                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                                        }`}
+                                                >
+                                                    {percent}%
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        {/* Custom Percentage Input */}
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="number"
+                                                value={customPercentage}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    setCustomPercentage(val);
+                                                    setPercentageMarkup(parseFloat(val) || 0);
+                                                }}
+                                                placeholder="Custom %"
+                                                min="0"
+                                                max="100"
+                                                step="0.1"
+                                                className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:border-blue-500"
+                                            />
+                                            {percentageMarkup > 0 && (
+                                                <button
+                                                    onClick={() => {
+                                                        setPercentageMarkup(0);
+                                                        setCustomPercentage('');
+                                                    }}
+                                                    className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs font-semibold hover:bg-red-500/30 transition-colors"
+                                                >
+                                                    Clear
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {/* Amount Breakdown */}
+                                        {percentageMarkup > 0 && (
+                                            <div className="p-3 bg-white/5 rounded-lg space-y-1 text-sm">
+                                                <div className="flex justify-between text-gray-400">
+                                                    <span>Base Amount:</span>
+                                                    <span>₹{parseFloat(amount).toFixed(2)}</span>
+                                                </div>
+                                                <div className="flex justify-between text-blue-400">
+                                                    <span>Markup ({percentageMarkup}%):</span>
+                                                    <span>₹{(parseFloat(amount) * percentageMarkup / 100).toFixed(2)}</span>
+                                                </div>
+                                                <div className="h-px bg-white/10 my-1" />
+                                                <div className="flex justify-between text-white font-bold">
+                                                    <span>Final Amount:</span>
+                                                    <span>₹{(parseFloat(amount) + (parseFloat(amount) * percentageMarkup / 100)).toFixed(2)}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </>
                         )}
 
                         <button
