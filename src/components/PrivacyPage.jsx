@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+
 
 export default function PrivacyPage() {
 
@@ -8,12 +8,12 @@ export default function PrivacyPage() {
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <Link
-                        to="/"
-                        className="text-gray-400 hover:text-white mb-4 transition-colors inline-block"
+                    <div
+                        onClick={() => window.location.href = '/'}
+                        className="text-gray-400 hover:text-white mb-4 transition-colors inline-block cursor-pointer"
                     >
                         ← Back to Home
-                    </Link>
+                    </div>
                     <h1 className="text-4xl font-bold text-white mb-2">Privacy Policy</h1>
                     <p className="text-gray-400">Last updated: January 2026</p>
                 </div>

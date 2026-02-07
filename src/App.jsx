@@ -21,7 +21,7 @@ import CancellationPage from './components/CancellationPage';
 
 function App() {
   const location = useLocation();
-  const hideNavbarRoutes = ['/early-access', '/download', '/merchant/login', '/merchant/dashboard', '/merchant/transactions', '/pay'];
+  const hideNavbarRoutes = ['/early-access', '/download', '/merchant/login', '/merchant/dashboard', '/merchant/transactions', '/pay', '/terms', '/privacy', '/refund-policy', '/cancellation-policy'];
   const isMerchantRoute = location.pathname.startsWith('/merchant');
 
   return (
