@@ -1,20 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function PrivacyPage() {
-    const navigate = useNavigate();
 
     return (
         <div className="min-h-screen bg-black text-white px-6 py-12">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <button
-                        onClick={() => navigate('/')}
-                        className="text-gray-400 hover:text-white mb-4 transition-colors"
+                    <Link
+                        to="/"
+                        className="text-gray-400 hover:text-white mb-4 transition-colors inline-block"
                     >
                         ← Back to Home
-                    </button>
+                    </Link>
                     <h1 className="text-4xl font-bold text-white mb-2">Privacy Policy</h1>
                     <p className="text-gray-400">Last updated: January 2026</p>
                 </div>
