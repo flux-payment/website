@@ -548,8 +548,8 @@ const LEGAL_CONTENT = {
             <p>You may contact us using the information below:</p>
             <div className="space-y-2 mt-4">
                 <p><strong className="text-white/90">Merchant Legal entity name:</strong> Flux</p>
-                <p><strong className="text-white/90">Registered Address:</strong> 406, C Wing, Nilgiri Apartment, Manohar Nagar Bamandaya Pada, Marol Mumbai MAHARASHTRA 400072</p>
-                <p><strong className="text-white/90">Operational Address:</strong> 406, C Wing, Nilgiri Apartment, Manohar Nagar Bamandaya Pada, Marol Mumbai MAHARASHTRA 400072</p>
+                <p><strong className="text-white/90">Registered Address:</strong> 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
+                <p><strong className="text-white/90">Operational Address:</strong> 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
                 <p><strong className="text-white/90">Telephone No:</strong> 9507510924</p>
                 <p><strong className="text-white/90">E-Mail ID:</strong> paywithfluxtech@gmail.com</p>
             </div>
@@ -587,7 +587,7 @@ const LEGAL_CONTENT = {
                 <li>if you have previously agreed to us using your personal information for direct marketing purposes, you may change your mind at any time by writing to or emailing us at paywithfluxtech@gmail.com</li>
             </ul>
             <p>We will not sell, distribute or lease your personal information to third parties unless we have your permission or are required by law to do so. We may use your personal information to send you promotional information about third parties which we think you may find interesting if you tell us that you wish this to happen.</p>
-            <p>If you believe that any information we are holding on you is incorrect or incomplete, please write to 406, C Wing, Nilgiri Apartment, Manohar Nagar Bamandaya Pada, Marol Mumbai MAHARASHTRA 400072 . or contact us at 9507510924 or paywithfluxtech@gmail.com as soon as possible. We will promptly correct any information found to be incorrect.</p>
+            <p>If you believe that any information we are holding on you is incorrect or incomplete, please write to 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207 . or contact us at 9507510924 or paywithfluxtech@gmail.com as soon as possible. We will promptly correct any information found to be incorrect.</p>
         </>
     ),
     refund: (
@@ -605,7 +605,7 @@ const LEGAL_CONTENT = {
     ),
     terms: (
         <>
-            <p>For the purpose of these Terms and Conditions, The term "we", "us", "our" used anywhere on this page shall mean Flux, whose registered/operational office is 406, C Wing, Nilgiri Apartment, Manohar Nagar Bamandaya Pada, Marol Mumbai MAHARASHTRA 400072 . "you", "your", "user", "visitor" shall mean any natural or legal person who is visiting our website and/or agreed to purchase from us.</p>
+            <p>For the purpose of these Terms and Conditions, The term "we", "us", "our" used anywhere on this page shall mean Flux, whose registered/operational office is 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207 . "you", "your", "user", "visitor" shall mean any natural or legal person who is visiting our website and/or agreed to purchase from us.</p>
             <p>Your use of the website and/or purchase from us are governed by following Terms and Conditions:</p>
             <ul className="list-disc pl-5 space-y-1">
                 <li>The content of the pages of this website is subject to change without notice.</li>

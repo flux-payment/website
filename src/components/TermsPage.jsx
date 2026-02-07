@@ -21,7 +21,7 @@ export default function TermsPage() {
 
                 {/* Content */}
                 <div className="prose prose-invert max-w-none text-white/70 leading-relaxed space-y-4">
-                    <p>For the purpose of these Terms and Conditions, The term "we", "us", "our" used anywhere on this page shall mean Flux, whose registered/operational office is 406, C Wing, Nilgiri Apartment, Manohar Nagar Bamandaya Pada, Marol Mumbai MAHARASHTRA 400072 . "you", "your", "user", "visitor" shall mean any natural or legal person who is visiting our website and/or agreed to purchase from us.</p>
+                    <p>For the purpose of these Terms and Conditions, The term "we", "us", "our" used anywhere on this page shall mean Flux, whose registered/operational office is 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207 . "you", "your", "user", "visitor" shall mean any natural or legal person who is visiting our website and/or agreed to purchase from us.</p>
                     <p>Your use of the website and/or purchase from us are governed by following Terms and Conditions:</p>
                     <ul className="list-disc pl-5 space-y-2">
                         <li>The content of the pages of this website is subject to change without notice.</li>

@@ -57,7 +57,7 @@ export default function PrivacyPage() {
                     </ul>
 
                     <p>We will not sell, distribute or lease your personal information to third parties unless we have your permission or are required by law to do so. We may use your personal information to send you promotional information about third parties which we think you may find interesting if you tell us that you wish this to happen.</p>
-                    <p>If you believe that any information we are holding on you is incorrect or incomplete, please write to 406, C Wing, Nilgiri Apartment, Manohar Nagar Bamandaya Pada, Marol Mumbai MAHARASHTRA 400072 . or contact us at 9507510924 or paywithfluxtech@gmail.com as soon as possible. We will promptly correct any information found to be incorrect.</p>
+                    <p>If you believe that any information we are holding on you is incorrect or incomplete, please write to 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207 . or contact us at 9507510924 or paywithfluxtech@gmail.com as soon as possible. We will promptly correct any information found to be incorrect.</p>
                 </div>
 
                 {/* Footer */}
