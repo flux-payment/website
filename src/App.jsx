@@ -14,6 +14,10 @@ import MerchantSupport from './components/merchant/MerchantSupport';
 import NotFoundPage from './components/NotFoundPage';
 import ProtectedRoute from './components/merchant/ProtectedRoute';
 import { MerchantAuthProvider } from './contexts/MerchantAuthContext';
+import TermsPage from './components/TermsPage';
+import PrivacyPage from './components/PrivacyPage';
+import RefundPage from './components/RefundPage';
+import CancellationPage from './components/CancellationPage';
 
 function App() {
   const location = useLocation();
@@ -41,6 +45,12 @@ function App() {
           <Route path="profile" element={<MerchantProfile />} />
           <Route path="support" element={<MerchantSupport />} />
         </Route>
+
+        {/* Policy Pages (Compliance URLs) */}
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/refund-policy" element={<RefundPage />} />
+        <Route path="/cancellation-policy" element={<CancellationPage />} />
 
         {/* 404 Route */}
         <Route path="*" element={<NotFoundPage />} />
