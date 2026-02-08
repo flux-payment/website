@@ -184,18 +184,16 @@ const MerchantDashboard = () => {
             canvas.toBlob(async (blob) => {
                 const file = new File([blob], 'flux-qr.png', { type: 'image/png' });
 
-                // Build payment link
+                // Generate payment link
                 const baseUrl = 'https://paywithflux.vercel.app/pay';
-                const params = new URLSearchParams({ m: qrData });
-                const paymentUrl = `${baseUrl}?${params.toString()}`;
+                const paymentLink = fixedAmountEnabled && amount
+                    ? `${baseUrl}?m=${merchantId}&amount=${amount}`
+                    : `${baseUrl}?m=${merchantId}`;
 
-                // Build share message with payment link
-                let shareText = `Pay ${merchantName} securely using Flux!`;
-                if (fixedAmountEnabled && fixedAmount > 0) {
-                    const amountInRupees = (fixedAmount / 100).toFixed(2);
-                    shareText += `\n\n💰 Amount: ₹${amountInRupees}`;
-                }
-                shareText += `\n\n🔗 Or click the link:\n${paymentUrl}`;
+                // Create share text with payment link
+                const shareText = fixedAmountEnabled && amount
+                    ? `Pay ${merchantName} ₹${amount} securely using Flux!\n\nOr click here: ${paymentLink}`
+                    : `Pay ${merchantName} securely using Flux!\n\nOr click here to pay: ${paymentLink}`;
 
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({
