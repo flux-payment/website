@@ -164,7 +164,7 @@ const MerchantProfile = () => {
                     />
                     <InfoCard
                         label="Contact"
-                        value={profileData?.contact}
+                        value={profileData?.contact || 'Not provided'}
                         icon={Phone}
                     />
                     <InfoCard
@@ -174,6 +174,41 @@ const MerchantProfile = () => {
                         isStatus
                     />
                 </motion.div>
+
+                {/* Settlement Details */}
+                {profileData?.bank_details && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="space-y-4 mb-8"
+                    >
+                        <h2 className="text-sm font-bold text-white/40 pl-2 mb-4 tracking-widest font-['Plus_Jakarta_Sans']">
+                            SETTLEMENT DETAILS
+                        </h2>
+
+                        <InfoCard
+                            label="Bank Name"
+                            value={profileData.bank_details.bank_name || 'N/A'}
+                            icon={Briefcase}
+                        />
+                        <InfoCard
+                            label="Account Number"
+                            value={profileData.bank_details.account_number ? `****${profileData.bank_details.account_number.slice(-4)}` : 'N/A'}
+                            icon={Shield}
+                        />
+                        <InfoCard
+                            label="IFSC Code"
+                            value={profileData.bank_details.ifsc || 'N/A'}
+                            icon={Phone}
+                        />
+                        <InfoCard
+                            label="Account Holder"
+                            value={profileData.bank_details.beneficiary_name || 'N/A'}
+                            icon={User}
+                        />
+                    </motion.div>
+                )}
 
                 {/* Security */}
                 <motion.div
