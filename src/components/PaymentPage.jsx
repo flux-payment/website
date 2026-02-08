@@ -212,7 +212,7 @@ export default function PaymentPage() {
 
     const validateContact = (val) => {
         if (!val || val.trim() === '') {
-            return 'Mobile number is required';
+            return ''; // Allowed to be empty (Optional)
         }
         if (!/^\d{10}$/.test(val)) {
             return 'Enter a valid 10-digit mobile number';
@@ -404,7 +404,7 @@ export default function PaymentPage() {
         </motion.div>
     );
 
-    const isFormValid = !amountError && !contactError && amount && contact.length === 10;
+    const isFormValid = !amountError && !contactError && amount;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-violet-950/20 flex flex-col items-center p-4 relative overflow-hidden selection:bg-violet-500/30 selection:text-violet-200 touch-action-manipulation">
@@ -557,7 +557,7 @@ export default function PaymentPage() {
                                     >
                                         <label className={`text-[10px] uppercase ml-3 font-bold tracking-widest transition-colors ${touched.contact && contactError ? 'text-red-400' : 'text-gray-500'
                                             }`}>
-                                            Your Mobile <span className="text-red-400">*</span>
+                                            Your Mobile <span className="text-gray-700 normal-case tracking-normal font-normal">(Optional, for receipt)</span>
                                         </label>
                                         <div className={`relative group border rounded-xl transition-all duration-300 ${touched.contact && contactError
                                             ? 'border-red-500/50 bg-red-500/5'
