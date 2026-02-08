@@ -184,11 +184,11 @@ const MerchantDashboard = () => {
             canvas.toBlob(async (blob) => {
                 const file = new File([blob], 'flux-qr.png', { type: 'image/png' });
 
-                // Generate payment link
+                // Generate payment link using merchant_id (100002), not UUID
                 const baseUrl = 'https://paywithflux.vercel.app/pay';
                 const paymentLink = includeAmount && amount
-                    ? `${baseUrl}?m=${merchantId}&amount=${amount}`
-                    : `${baseUrl}?m=${merchantId}`;
+                    ? `${baseUrl}?m=${merchantCode || merchantId}&amount=${amount}`
+                    : `${baseUrl}?m=${merchantCode || merchantId}`;
 
                 // Create share text with payment link
                 const shareText = includeAmount && amount
