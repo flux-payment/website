@@ -503,40 +503,23 @@ const MerchantDashboard = () => {
                                 <div className="text-sm text-gray-400 mt-1">Total Earned</div>
                             </div>
                             <div className="py-4 sm:py-0 border-b sm:border-b-0 sm:border-x border-white/10">
-                                <div className="text-2xl font-bold text-green-400">₹{balance?.unsettled_amount || 0}</div>
+                                <div className="flex items-center justify-center gap-2">
+                                    <div className="text-2xl font-bold text-green-400">₹{balance?.unsettled_amount || 0}</div>
+                                    {balance?.has_estimated_balances && (
+                                        <span className="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 text-[9px] font-bold rounded border border-yellow-500/30">
+                                            EST
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="text-sm text-gray-400 mt-1">Balance</div>
                             </div>
                             <div className="pt-4 sm:pt-0">
                                 <div className="text-2xl font-bold text-gray-300">₹{balance?.settled_amount || 0}</div>
                                 <div className="text-sm text-gray-400 mt-1">Settled</div>
-                                <div className="text-sm text-gray-400 mt-1">Settled</div>
                             </div>
                         </div>
                     )}
                 </motion.div >
-
-                {/* Estimated Balance Card */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="glass-card rounded-2xl p-5">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-white/60 font-['Plus_Jakarta_Sans']">Current Balance</span>
-                        {balance?.has_estimated_balances && (
-                            <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-[10px] font-bold rounded-full border border-yellow-500/30">
-                                ESTIMATED
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex items-baseline gap-1">
-                        <div className="text-2xl font-bold text-green-400">₹{balance?.unsettled_amount || 0}</div>
-                        {balance?.has_estimated_balances && (
-                            <span className="text-xs text-yellow-400/60">*</span>
-                        )}
-                    </div>
-                    <p className="text-xs text-white/40 mt-1 font-['Source_Code_Pro']">Ready to Withdraw</p>
-                </motion.div>
 
                 {/* Recent Transactions */}
                 < motion.div
@@ -570,19 +553,18 @@ const MerchantDashboard = () => {
                                 {transactions.map((txn, idx) => (
                                     <div
                                         key={idx}
-                                        className="glass-card rounded-2xl p-4 hover:bg-white/5 transition-all"
+                                        onClick={() => setSelectedTransaction(txn)}
+                                        className="glass-card rounded-2xl p-4 hover:bg-white/10 transition-colors cursor-pointer"
                                     >
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3 flex-1">
-                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${txn.status === 'captured' ? 'bg-green-500/20' : 'bg-red-500/20'
-                                                    }`}>
-                                                    <TrendingUp className={`w-5 h-5 ${txn.status === 'captured' ? 'text-green-400' : 'text-red-400'
-                                                        }`} />
+                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${txn.status === 'captured' ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
+                                                    <TrendingUp className={`w-5 h-5 ${txn.status === 'captured' ? 'text-green-400' : 'text-red-400'}`} />
                                                 </div>
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2">
                                                         <p className="font-semibold text-white font-['Plus_Jakarta_Sans']">
-                                                            {txn.from || txn.user_name || 'Unknown'}
+                                                            {txn.from || txn.user_name || 'Guest'}
                                                         </p>
                                                         {txn.estimation_status === 'estimated' && (
                                                             <span className="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 text-[9px] font-bold rounded border border-yellow-500/30">
@@ -596,34 +578,8 @@ const MerchantDashboard = () => {
                                                         )}
                                                     </div>
                                                     <p className="text-xs text-gray-400 font-['Source_Code_Pro']">
-                                                        {txn.method?.toUpperCase() || 'PAYMENT'} • {new Date(txn.created_at * 1000).toLocaleDateString()}
+                                                        {txn.method?.toUpperCase() || 'PAYMENT'} • {new Date(txn.created_at * 1000).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
                                                     </p>
-
-                                                    {/* Fee Breakdown - Only show if fee data exists */}
-                                                    {(txn.razorpay_fee != null || txn.flux_fee != null) && (
-                                                        <div className="mt-2 pt-2 border-t border-white/5">
-                                                            <div className="grid grid-cols-3 gap-2 text-[10px]">
-                                                                {txn.razorpay_fee != null && (
-                                                                    <div>
-                                                                        <p className="text-gray-500">Bank Fee</p>
-                                                                        <p className="text-red-400 font-mono">₹{txn.razorpay_fee.toFixed(2)}</p>
-                                                                    </div>
-                                                                )}
-                                                                {txn.flux_fee != null && (
-                                                                    <div>
-                                                                        <p className="text-gray-500">Flux Fee</p>
-                                                                        <p className="text-orange-400 font-mono">₹{txn.flux_fee.toFixed(2)}</p>
-                                                                    </div>
-                                                                )}
-                                                                {txn.gst != null && (
-                                                                    <div>
-                                                                        <p className="text-gray-500">GST</p>
-                                                                        <p className="text-purple-400 font-mono">₹{txn.gst.toFixed(2)}</p>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    )}
                                                 </div>
                                             </div>
                                             <div className="text-right">

@@ -109,44 +109,95 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
                         {transaction.user_name && (
                             <DetailRow label="From" value={transaction.user_name} />
                         )}
+                        {transaction.user_contact && (
+                            <DetailRow label="Contact" value={transaction.user_contact} />
+                        )}
+                        {transaction.user_email && (
+                            <DetailRow label="Email" value={transaction.user_email} />
+                        )}
+                        {transaction.vpa && (
+                            <DetailRow label="UPI VPA" value={transaction.vpa} />
+                        )}
                         <DetailRow label="Payment ID" value={transaction.razorpay_payment_id || 'N/A'} />
                         <DetailRow label="Order ID" value={transaction.razorpay_order_id || 'N/A'} />
                         <DetailRow
                             label="Method"
-                            value={`${(transaction.method || 'card').toUpperCase()} - ${(transaction.card_network || '').toUpperCase()} •••• ${transaction.card_last4 || ''}`}
+                            value={transaction.method ? `${transaction.method.toUpperCase()}${transaction.card_last4 ? ` •••• ${transaction.card_last4}` : ''}` : 'N/A'}
                         />
                     </div>
 
                     {/* Settlement Breakdown (Merchant Only) */}
-                    {role === 'merchant' && transaction.razorpay_payment_id && (
+                    {role === 'merchant' && (transaction.razorpay_fee != null || settlementData) && (
                         <div className="mt-6">
                             {loadingSettlement ? (
                                 <div className="flex justify-center py-4">
                                     <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                                 </div>
-                            ) : settlementData ? (
+                            ) : (
                                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                                    <h3 className="text-white font-bold text-sm mb-3 font-['Plus_Jakarta_Sans']">
-                                        Settlement Breakdown
-                                    </h3>
-                                    <DetailRow label="Gross Amount" value={`₹${settlementData.amount_collected}`} />
-                                    <DetailRow
-                                        label="Reference Fees"
-                                        value={`-₹${settlementData.deductions?.total_fee || 0}`}
-                                    />
-                                    <p className="text-white/30 text-xs ml-4 mb-2">(Bank Fee + GST)</p>
-                                    <div className="h-px bg-white/10 my-2" />
-                                    <DetailRow label="Net Settlement" value={`₹${settlementData.net_settlement}`} />
-                                    <div className="flex justify-end mt-2">
-                                        <span className={`text-xs font-bold tracking-wider ${settlementData.status?.toLowerCase() === 'settled'
-                                            ? 'text-green-400'
-                                            : 'text-orange-400'
-                                            }`}>
-                                            STATUS: {(settlementData.status || 'PENDING').toUpperCase()}
-                                        </span>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h3 className="text-white font-bold text-sm font-['Plus_Jakarta_Sans']">
+                                            Settlement Breakdown
+                                        </h3>
+                                        {transaction.estimation_status === 'estimated' && (
+                                            <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-[9px] font-bold rounded border border-yellow-500/30">
+                                                ESTIMATED
+                                            </span>
+                                        )}
+                                        {transaction.is_confirmed && (
+                                            <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[9px] font-bold rounded border border-green-500/30">
+                                                CONFIRMED
+                                            </span>
+                                        )}
                                     </div>
+
+                                    <DetailRow
+                                        label="Gross Amount"
+                                        value={`₹${(settlementData?.amount_collected || transaction.amount)?.toFixed(2)}`}
+                                    />
+
+                                    {/* Detailed Fee Breakdown */}
+                                    <div className="ml-4 space-y-1 my-2">
+                                        {(transaction.razorpay_fee != null || settlementData?.deductions?.bank_fee != null) && (
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-white/40">Bank Fee</span>
+                                                <span className="text-red-400 font-mono">
+                                                    -₹{(settlementData?.deductions?.bank_fee || transaction.razorpay_fee)?.toFixed(2)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {(transaction.flux_fee != null || settlementData?.deductions?.flux_fee != null) && (
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-white/40">Flux Fee</span>
+                                                <span className="text-orange-400 font-mono">
+                                                    -₹{(settlementData?.deductions?.flux_fee || transaction.flux_fee)?.toFixed(2)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {(transaction.gst != null || settlementData?.deductions?.gst != null) && (
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-white/40">GST (18%)</span>
+                                                <span className="text-purple-400 font-mono">
+                                                    -₹{(settlementData?.deductions?.gst || transaction.gst)?.toFixed(2)}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="h-px bg-white/10 my-2" />
+
+                                    <DetailRow
+                                        label="Net Settlement"
+                                        value={`₹${(settlementData?.net_settlement || transaction.net_amount || transaction.amount)?.toFixed(2)}`}
+                                    />
+
+                                    {transaction.fee_strategy && (
+                                        <p className="text-white/30 text-[10px] mt-2 font-mono">
+                                            Strategy: {transaction.fee_strategy}
+                                        </p>
+                                    )}
                                 </div>
-                            ) : null}
+                            )}
                         </div>
                     )}
 
