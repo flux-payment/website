@@ -186,12 +186,12 @@ const MerchantDashboard = () => {
 
                 // Generate payment link
                 const baseUrl = 'https://paywithflux.vercel.app/pay';
-                const paymentLink = fixedAmountEnabled && amount
+                const paymentLink = includeAmount && amount
                     ? `${baseUrl}?m=${merchantId}&amount=${amount}`
                     : `${baseUrl}?m=${merchantId}`;
 
                 // Create share text with payment link
-                const shareText = fixedAmountEnabled && amount
+                const shareText = includeAmount && amount
                     ? `Pay ${merchantName} ₹${amount} securely using Flux!\n\nOr click here: ${paymentLink}`
                     : `Pay ${merchantName} securely using Flux!\n\nOr click here to pay: ${paymentLink}`;
 
