@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import ScannerPage from './components/ScannerPage';
@@ -23,6 +23,11 @@ function App() {
   const location = useLocation();
   const hideNavbarRoutes = ['/early-access', '/download', '/merchant/login', '/merchant/dashboard', '/merchant/transactions', '/pay', '/terms', '/privacy', '/refund-policy', '/cancellation-policy'];
   const isMerchantRoute = location.pathname.startsWith('/merchant');
+
+  // Force title to "Flux" for browser alerts
+  useEffect(() => {
+    document.title = 'Flux';
+  }, []);
 
   return (
     <MerchantAuthProvider>
