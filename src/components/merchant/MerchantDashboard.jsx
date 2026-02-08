@@ -186,8 +186,10 @@ const MerchantDashboard = () => {
 
                 // Generate payment link using merchant_id (100002), not UUID
                 const baseUrl = 'https://paywithflux.vercel.app/pay';
-                const paymentLink = includeAmount && amount
-                    ? `${baseUrl}?m=${merchantCode || merchantId}&amount=${amount * 100}`
+                // Convert amount to paise (₹100 = 10000 paise)
+                const amountInPaise = includeAmount && amount ? Math.round(parseFloat(amount) * 100) : null;
+                const paymentLink = amountInPaise
+                    ? `${baseUrl}?m=${merchantCode || merchantId}&amount=${amountInPaise}`
                     : `${baseUrl}?m=${merchantCode || merchantId}`;
 
                 // Create share text with payment link
