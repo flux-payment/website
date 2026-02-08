@@ -464,7 +464,7 @@ export default function PaymentPage() {
                                 transition={{ delay: 0.2 }}
                                 className="bg-gradient-to-b from-white/10 to-transparent px-5 pt-5 pb-4 flex flex-col items-center text-center"
                             >
-                                <div className="flex justify-center">
+                                <div className="flex justify-center mb-3">
                                     <MerchantAvatar name={merchant.merchant_name} />
                                 </div>
                                 <motion.h2

@@ -187,7 +187,7 @@ const MerchantDashboard = () => {
                 // Generate payment link using merchant_id (100002), not UUID
                 const baseUrl = 'https://paywithflux.vercel.app/pay';
                 const paymentLink = includeAmount && amount
-                    ? `${baseUrl}?m=${merchantCode || merchantId}&amount=${amount}`
+                    ? `${baseUrl}?m=${merchantCode || merchantId}&amount=${amount * 100}`
                     : `${baseUrl}?m=${merchantCode || merchantId}`;
 
                 // Create share text with payment link
