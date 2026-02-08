@@ -58,10 +58,20 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
                     transition={{ type: 'spring', damping: 30, stiffness: 300 }}
                     className="relative bg-[#1A1A1A] rounded-t-3xl sm:rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col"
                 >
-                    {/* Handle bar (mobile) */}
-                    <div className="flex justify-center pt-4 pb-2 sm:hidden">
+                    {/* Draggable Handle bar (mobile) */}
+                    <motion.div
+                        className="flex justify-center pt-4 pb-2 sm:hidden cursor-grab active:cursor-grabbing"
+                        drag="y"
+                        dragConstraints={{ top: 0, bottom: 0 }}
+                        dragElastic={{ top: 0, bottom: 0.5 }}
+                        onDragEnd={(e, info) => {
+                            if (info.offset.y > 100) {
+                                onClose();
+                            }
+                        }}
+                    >
                         <div className="w-10 h-1 bg-white/20 rounded-full" />
-                    </div>
+                    </motion.div>
 
                     {/* Close button (desktop) */}
                     <button
