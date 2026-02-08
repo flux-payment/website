@@ -302,7 +302,7 @@ const MerchantDashboard = () => {
                         </div>
                         <div>
                             <h2 className="text-xl font-bold font-['Plus_Jakarta_Sans']">{merchantName}</h2>
-                            <p className="text-sm text-gray-400 font-['Source_Code_Pro']">MID: {merchantId?.substring(0, 8)}</p>
+                            <p className="text-sm text-gray-400 font-['Source_Code_Pro']">MID: {merchantCode || merchantId?.substring(0, 8)}</p>
                         </div>
                     </div>
                 </motion.div>
@@ -357,8 +357,8 @@ const MerchantDashboard = () => {
                                                         setCustomPercentage('');
                                                     }}
                                                     className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all ${percentageMarkup === percent && !customPercentage
-                                                            ? 'bg-blue-500 text-white'
-                                                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                                        ? 'bg-blue-500 text-white'
+                                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                                         }`}
                                                 >
                                                     {percent}%
