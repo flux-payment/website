@@ -285,12 +285,29 @@ export default function PaymentPage() {
             const rzpKey = import.meta.env.VITE_RAZORPAY_KEY;
             const payAmount = parseFloat(amount) * 100;
 
+            // Create Razorpay order first (required for netbanking and other payment methods)
+            const orderResponse = await axios.post(`${backendUrl}/orders`, {
+                user_id: "GUEST", // Guest user for web payments
+                amount: payAmount,
+                currency: merchant.currency || "INR",
+                receipt: `receipt_${Date.now()}`,
+                notes: {
+                    type: "merchant_pay",
+                    merchant_id: merchant.merchant_id,
+                    user_name: name || "Guest",
+                    contact: contact
+                }
+            });
+
+            const orderId = orderResponse.data.razorpay_order_id;
+
             const options = {
                 key: rzpKey,
                 amount: payAmount,
                 currency: merchant.currency || "INR",
                 name: merchant.merchant_name,
                 description: `Payment to ${merchant.merchant_name}`,
+                order_id: orderId, // Required for netbanking and other payment methods
                 prefill: {
                     contact: contact,
                     name: name
@@ -333,7 +350,7 @@ export default function PaymentPage() {
             rzp.open();
         } catch (err) {
             console.error(err);
-            alert("Payment initialization failed. Please try again.");
+            alert("Something went wrong, please try again after sometime.");
             setSubmitting(false);
         }
     };
