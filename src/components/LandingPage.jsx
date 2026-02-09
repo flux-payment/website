@@ -482,6 +482,14 @@ export default function LandingPage() {
             {/* FOOTER */}
             {/* FOOTER */}
             <footer className="mt-auto flex flex-col items-center gap-4 w-full pb-6 z-10 px-4 pt-12 border-t border-white/5 bg-black">
+                {/* Legal Entity Information */}
+                <div className="text-center text-xs text-gray-400 space-y-1 max-w-2xl">
+                    <p><strong className="text-gray-300">Legal Entity:</strong> Singh Global Ventures | <strong className="text-gray-300">Brand:</strong> Pay With Flux</p>
+                    <p><strong className="text-gray-300">Proprietor:</strong> Bandana Singh</p>
+                    <p className="text-[11px]">202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
+                    <p className="text-[11px]"><strong className="text-gray-300">Contact:</strong> paywithfluxtech@gmail.com | +91 9507510924</p>
+                </div>
+
                 <p className="text-gray-500 text-sm">© 2026 Flux Payment Technologies. All rights reserved.</p>
 
 
@@ -547,7 +555,9 @@ const LEGAL_CONTENT = {
         <>
             <p>You may contact us using the information below:</p>
             <div className="space-y-2 mt-4">
-                <p><strong className="text-white/90">Merchant Legal entity name:</strong> Flux</p>
+                <p><strong className="text-white/90">Legal Entity Name:</strong> Singh Global Ventures</p>
+                <p><strong className="text-white/90">Brand / DBA Name:</strong> Pay With Flux</p>
+                <p><strong className="text-white/90">Proprietor:</strong> Bandana Singh</p>
                 <p><strong className="text-white/90">Registered Address:</strong> 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
                 <p><strong className="text-white/90">Operational Address:</strong> 202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
                 <p><strong className="text-white/90">Telephone No:</strong> 9507510924</p>
