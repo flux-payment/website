@@ -498,10 +498,10 @@ export default function LandingPage() {
                 <div className="w-full max-w-4xl border-t border-white/5 pt-6">
                     <div className="text-center text-[11px] text-gray-500 space-y-1.5 leading-relaxed">
                         <p className="font-medium text-gray-400">
-                            <span className="text-gray-500">Legal Entity:</span> Singh Global Ventures
-                            <span className="mx-2 text-gray-700">|</span>
-                            <span className="text-gray-500">Brand:</span> Pay With Flux
-                            <span className="mx-2 text-gray-700">|</span>
+                            <span className="text-gray-500">Legal Entity:</span> Singh Global Ventures{' '}
+                            <span className="mx-2 text-gray-700">|</span>{' '}
+                            <span className="text-gray-500">Brand:</span> Pay With Flux{' '}
+                            <span className="mx-2 text-gray-700">|</span>{' '}
                             <span className="text-gray-500">Proprietor:</span> Bandana Singh
                         </p>
                         <p className="text-gray-600">202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
