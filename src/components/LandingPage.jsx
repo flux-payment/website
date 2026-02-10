@@ -481,17 +481,8 @@ export default function LandingPage() {
 
             {/* FOOTER */}
             {/* FOOTER */}
-            <footer className="mt-auto flex flex-col items-center gap-4 w-full pb-6 z-10 px-4 pt-12 border-t border-white/5 bg-black">
-                {/* Legal Entity Information */}
-                <div className="text-center text-xs text-gray-400 space-y-1 max-w-2xl">
-                    <p><strong className="text-gray-300">Legal Entity:</strong> Singh Global Ventures | <strong className="text-gray-300">Brand:</strong> Pay With Flux</p>
-                    <p><strong className="text-gray-300">Proprietor:</strong> Bandana Singh</p>
-                    <p className="text-[11px]">202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
-                    <p className="text-[11px]"><strong className="text-gray-300">Contact:</strong> paywithfluxtech@gmail.com | +91 9507510924</p>
-                </div>
-
+            <footer className="mt-auto flex flex-col items-center gap-6 w-full pb-8 z-10 px-4 pt-12 border-t border-white/5 bg-black">
                 <p className="text-gray-500 text-sm">© 2026 Flux Payment Technologies. All rights reserved.</p>
-
 
                 <div className="flex flex-wrap justify-center gap-x-2 gap-y-2 text-xs text-white/40">
                     <button onClick={() => setActiveModal('contact')} className="hover:text-white transition-colors">Contact Us</button>
@@ -501,6 +492,21 @@ export default function LandingPage() {
                     <button onClick={() => setActiveModal('refund')} className="hover:text-white transition-colors">Cancellations & Refunds</button>
                     <span className="hidden sm:inline">•</span>
                     <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors">Terms & Conditions</button>
+                </div>
+
+                {/* Legal Entity Information - Compliance */}
+                <div className="w-full max-w-4xl border-t border-white/5 pt-6">
+                    <div className="text-center text-[11px] text-gray-500 space-y-1.5 leading-relaxed">
+                        <p className="font-medium text-gray-400">
+                            <span className="text-gray-500">Legal Entity:</span> Singh Global Ventures
+                            <span className="mx-2 text-gray-700">|</span>
+                            <span className="text-gray-500">Brand:</span> Pay With Flux
+                            <span className="mx-2 text-gray-700">|</span>
+                            <span className="text-gray-500">Proprietor:</span> Bandana Singh
+                        </p>
+                        <p className="text-gray-600">202, O Wing, Savannah, Baif Road, Wagholi, Pune, Maharashtra - 412207</p>
+                        <p className="text-gray-600">paywithfluxtech@gmail.com · +91 9507510924</p>
+                    </div>
                 </div>
             </footer>
 
