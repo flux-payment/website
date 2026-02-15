@@ -123,6 +123,9 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
                                 <DetailRow label="UPI VPA" value={transaction.vpa} />
                             )}
                             <DetailRow label="Payment ID" value={transaction.razorpay_payment_id || 'N/A'} />
+                            {transaction.description && (
+                                <DetailRow label="Description" value={transaction.description} />
+                            )}
                             <DetailRow label="Order ID" value={transaction.razorpay_order_id || 'N/A'} />
                             <DetailRow
                                 label="Method"
