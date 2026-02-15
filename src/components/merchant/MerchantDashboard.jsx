@@ -186,15 +186,22 @@ const MerchantDashboard = () => {
 
                 // Generate payment link using merchant_id (100002), not UUID
                 const baseUrl = 'https://paywithflux.vercel.app/pay';
-                // Convert amount to paise (₹100 = 10000 paise)
-                const amountInPaise = includeAmount && amount ? Math.round(parseFloat(amount) * 100) : null;
+                // Convert amount to paise (₹100 = 10000 paise) and include markup
+                let amountInPaise = null;
+                let displayAmount = amount;
+                if (includeAmount && amount) {
+                    const baseAmount = parseFloat(amount);
+                    const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
+                    amountInPaise = Math.round(finalAmount * 100);
+                    displayAmount = finalAmount.toFixed(2);
+                }
                 const paymentLink = amountInPaise
                     ? `${baseUrl}?m=${merchantCode || merchantId}&amount=${amountInPaise}`
                     : `${baseUrl}?m=${merchantCode || merchantId}`;
 
                 // Create share text with payment link
                 const shareText = includeAmount && amount
-                    ? `Pay ${merchantName} ₹${amount} securely using Flux!\n\nOr click here: ${paymentLink}`
+                    ? `Pay ${merchantName} ₹${displayAmount} securely using Flux!\n\nOr click here: ${paymentLink}`
                     : `Pay ${merchantName} securely using Flux!\n\nOr click here to pay: ${paymentLink}`;
 
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
