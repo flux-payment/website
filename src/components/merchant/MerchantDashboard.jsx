@@ -232,14 +232,14 @@ const MerchantDashboard = () => {
                 return;
             }
 
-            // Generate link
-            const baseUrl = window.location.origin;
-            // Use the new simplified format logic here too if needed, but for now generic link is fine?
-            // Wait, we want to share the link that the USER uses.
-            // The user uses the 'Pay' page.
-            // My previous edit to PaymentPage supports 'm'.
-            // So link should be: `${baseUrl}/pay?m=${merchantCode}...`
-            const shortUrl = `${import.meta.env.VITE_FRONTEND_URL}/pay?m=${merchantCode}${includeAmount && amount ? `&a=${parseFloat(amount) * 100}` : ''}`;
+            // Generate link with markup included
+            let amountParam = '';
+            if (includeAmount && amount) {
+                const baseAmount = parseFloat(amount);
+                const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
+                amountParam = `&a=${Math.round(finalAmount * 100)}`;
+            }
+            const shortUrl = `${import.meta.env.VITE_FRONTEND_URL}/pay?m=${merchantCode}${amountParam}`;
 
             await navigator.clipboard.writeText(shortUrl);
             showToast('Payment link copied!');
