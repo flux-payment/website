@@ -106,6 +106,7 @@ export default function PaymentPage() {
     const [amount, setAmount] = useState('');
     const [contact, setContact] = useState('');
     const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [isAmountLocked, setIsAmountLocked] = useState(false);
@@ -295,7 +296,8 @@ export default function PaymentPage() {
                     type: "merchant_pay",
                     merchant_id: merchant.merchant_id,
                     user_name: name || "Guest",
-                    contact: contact
+                    contact: contact,
+                    description: description || null
                 }
             });
 
@@ -323,7 +325,7 @@ export default function PaymentPage() {
                             payment_id: response.razorpay_payment_id,
                             merchant_id: merchant.merchant_id,
                             amount: payAmount,
-                            description: "Web QR Payment"
+                            description: description || "Web QR Payment"
                         });
                         setSuccess(true);
                     } catch (e) {
@@ -639,6 +641,28 @@ export default function PaymentPage() {
                                             placeholder="John Doe"
                                             className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:bg-white/10 transition-all text-sm"
                                         />
+                                    </motion.div>
+
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.6 }}
+                                        className="space-y-2"
+                                    >
+                                        <label className="text-[10px] text-gray-500 uppercase ml-3 font-bold tracking-widest">
+                                            Description <span className="text-gray-700 normal-case tracking-normal font-normal">(Optional - What is this payment for?)</span>
+                                        </label>
+                                        <textarea
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value.slice(0, 200))}
+                                            placeholder="e.g., Consultation fee, Product purchase, Service charge"
+                                            rows="2"
+                                            maxLength="200"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:bg-white/10 transition-all text-sm resize-none"
+                                        />
+                                        <div className="text-right text-xs text-gray-600">
+                                            {description.length}/200
+                                        </div>
                                     </motion.div>
                                 </div>
 
