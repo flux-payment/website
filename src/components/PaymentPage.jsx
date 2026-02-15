@@ -650,7 +650,7 @@ export default function PaymentPage() {
                                         className="space-y-2"
                                     >
                                         <label className="text-[10px] text-gray-500 uppercase ml-3 font-bold tracking-widest">
-                                            Description <span className="text-gray-700 normal-case tracking-normal font-normal">(Optional - What is this payment for?)</span>
+                                            Description <span className="text-gray-700 normal-case tracking-normal font-normal">(Optional)</span>
                                         </label>
                                         <textarea
                                             value={description}
