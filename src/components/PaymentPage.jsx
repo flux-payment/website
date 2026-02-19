@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import axios from 'axios';
+import html2canvas from 'html2canvas';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Store, Coffee, Utensils, Cake, Wine, ShoppingBag,
     Shirt, Scissors, Dumbbell, Car, Book, Activity, Plane,
     Smartphone, Gamepad2, CreditCard, Briefcase, Star, Zap,
-    CheckCircle2, AlertCircle, Loader2, Share2, Copy, Check
+    CheckCircle2, AlertCircle, Loader2, Share2, Copy, Check, Download
 } from 'lucide-react';
 
 const getSmartAvatarProps = (name) => {
@@ -112,6 +113,8 @@ export default function PaymentPage() {
     const [isAmountLocked, setIsAmountLocked] = useState(false);
     const [txnDetails, setTxnDetails] = useState(null);
     const [copied, setCopied] = useState(false);
+    const [sharing, setSharing] = useState(false);
+    const receiptRef = useRef(null);
 
     // Validation states
     const [amountError, setAmountError] = useState('');
@@ -384,44 +387,68 @@ export default function PaymentPage() {
     );
 
     const handleShare = async () => {
-        const txnDate = txnDetails?.timestamp ? txnDetails.timestamp.toLocaleString('en-IN', {
-            dateStyle: 'medium', timeStyle: 'short'
-        }) : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+        if (!receiptRef.current || sharing) return;
+        setSharing(true);
 
-        const receiptText = [
-            `✅ Payment Successful`,
-            ``,
-            `Amount: ₹${amount}`,
-            `To: ${merchant.merchant_name}`,
-            name ? `From: ${name}` : null,
-            contact ? `Phone: +91 ${contact}` : null,
-            `Date: ${txnDate}`,
-            description ? `Note: ${description}` : null,
-            ``,
-            `Payment ID: ${txnDetails?.paymentId || 'N/A'}`,
-            `Order ID: ${txnDetails?.orderId || 'N/A'}`,
-            ``,
-            `Powered by Flux • paywithflux.vercel.app`,
-        ].filter(Boolean).join('\n');
+        try {
+            // Capture the receipt card as an image
+            const canvas = await html2canvas(receiptRef.current, {
+                backgroundColor: '#09090b',
+                scale: 2,
+                useCORS: true,
+                logging: false,
+            });
 
-        if (navigator.share) {
-            try {
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const file = new File([blob], `flux-receipt-${txnDetails?.paymentId || 'payment'}.png`, { type: 'image/png' });
+
+            // Try Web Share API with file
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({
                     title: 'Payment Receipt - Flux',
-                    text: receiptText,
+                    files: [file],
                 });
-            } catch (e) {
-                if (e.name !== 'AbortError') console.error(e);
+            } else {
+                // Fallback: download the image
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
             }
-        } else {
-            // Fallback: copy to clipboard
-            try {
-                await navigator.clipboard.writeText(receiptText);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            } catch (e) {
-                console.error(e);
-            }
+        } catch (e) {
+            if (e.name !== 'AbortError') console.error('Share failed:', e);
+        } finally {
+            setSharing(false);
+        }
+    };
+
+    const handleDownload = async () => {
+        if (!receiptRef.current || sharing) return;
+        setSharing(true);
+
+        try {
+            const canvas = await html2canvas(receiptRef.current, {
+                backgroundColor: '#09090b',
+                scale: 2,
+                useCORS: true,
+                logging: false,
+            });
+
+            const url = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `flux-receipt-${txnDetails?.paymentId || 'payment'}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (e) {
+            console.error('Download failed:', e);
+        } finally {
+            setSharing(false);
         }
     };
 
@@ -442,79 +469,99 @@ export default function PaymentPage() {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 200 }}
-                className="bg-zinc-900/90 backdrop-blur-xl border border-green-500/20 rounded-3xl overflow-hidden max-w-sm w-full shadow-2xl"
+                className="max-w-sm w-full"
             >
-                {/* Success Header */}
-                <div className="p-6 pb-5 text-center bg-gradient-to-b from-green-500/10 to-transparent">
+                {/* Capturable Receipt Area */}
+                <div ref={receiptRef} className="bg-zinc-900 rounded-3xl overflow-hidden border border-green-500/20 shadow-2xl" style={{ padding: 0 }}>
+                    {/* Success Header */}
+                    <div className="p-6 pb-5 text-center bg-gradient-to-b from-green-500/10 to-transparent">
+                        <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                            className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30 ring-4 ring-green-500/20"
+                        >
+                            <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
+                        </motion.div>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="text-3xl font-header font-bold text-white mb-1"
+                        >
+                            ₹{amount}
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.35 }}
+                            className="text-gray-400 text-sm"
+                        >
+                            paid to <span className="text-white font-semibold">{merchant.merchant_name}</span>
+                        </motion.p>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.4 }}
+                            className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20"
+                        >
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                            <span className="text-green-400 text-xs font-bold tracking-wider uppercase">Successful</span>
+                        </motion.div>
+                    </div>
+
+                    {/* Transaction Details */}
                     <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                        className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30 ring-4 ring-green-500/20"
-                    >
-                        <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
-                    </motion.div>
-                    <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-3xl font-header font-bold text-white mb-1"
+                        transition={{ delay: 0.45 }}
+                        className="mx-4 mb-4 p-4 bg-black/40 rounded-2xl border border-white/5"
                     >
-                        ₹{amount}
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.35 }}
-                        className="text-gray-400 text-sm"
-                    >
-                        paid to <span className="text-white font-semibold">{merchant.merchant_name}</span>
-                    </motion.p>
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20"
-                    >
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-green-400 text-xs font-bold tracking-wider uppercase">Successful</span>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">Transaction Details</p>
+                        {txnDetails?.paymentId && <DetailRow label="Payment ID" value={txnDetails.paymentId} mono />}
+                        {txnDetails?.orderId && <DetailRow label="Order ID" value={txnDetails.orderId} mono />}
+                        <DetailRow label="Date & Time" value={txnDate} />
+                        {name && <DetailRow label="Paid By" value={name} />}
+                        {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
+                        {description && <DetailRow label="Note" value={description} />}
+                        <DetailRow label="Status" value={
+                            <span className="text-green-400 font-semibold flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+                            </span>
+                        } />
                     </motion.div>
+
+                    {/* Flux Watermark */}
+                    <div className="py-3 text-center border-t border-white/5">
+                        <p className="text-[11px] text-gray-600">Powered by <span className="text-violet-400/60 font-semibold">Flux</span> • paywithflux.vercel.app</p>
+                    </div>
                 </div>
 
-                {/* Transaction Details */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.45 }}
-                    className="mx-4 mb-4 p-4 bg-black/40 rounded-2xl border border-white/5"
-                >
-                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">Transaction Details</p>
-                    {txnDetails?.paymentId && <DetailRow label="Payment ID" value={txnDetails.paymentId} mono />}
-                    {txnDetails?.orderId && <DetailRow label="Order ID" value={txnDetails.orderId} mono />}
-                    <DetailRow label="Date & Time" value={txnDate} />
-                    {name && <DetailRow label="Paid By" value={name} />}
-                    {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
-                    {description && <DetailRow label="Note" value={description} />}
-                    <DetailRow label="Status" value={
-                        <span className="text-green-400 font-semibold flex items-center gap-1">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Completed
-                        </span>
-                    } />
-                </motion.div>
-
-                {/* Action Buttons */}
+                {/* Action Buttons — outside the capture area */}
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.55 }}
-                    className="px-4 pb-4 flex gap-3"
+                    className="flex gap-3 mt-4"
                 >
                     <button
                         onClick={handleShare}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600/20 border border-violet-500/30 text-violet-300 hover:bg-violet-600/30 transition-all text-sm font-semibold"
+                        disabled={sharing}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600/20 border border-violet-500/30 text-violet-300 hover:bg-violet-600/30 transition-all text-sm font-semibold disabled:opacity-50"
                     >
-                        <Share2 className="w-4 h-4" />
-                        Share Receipt
+                        {sharing ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <Share2 className="w-4 h-4" />
+                        )}
+                        {sharing ? 'Capturing...' : 'Share Receipt'}
+                    </button>
+                    <button
+                        onClick={handleDownload}
+                        disabled={sharing}
+                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all text-sm font-medium disabled:opacity-50"
+                    >
+                        <Download className="w-4 h-4" />
                     </button>
                     <button
                         onClick={async () => {
@@ -530,7 +577,7 @@ export default function PaymentPage() {
                 </motion.div>
 
                 {/* Footer */}
-                <div className="px-4 pb-5 text-center">
+                <div className="mt-3 text-center">
                     <p className="text-[11px] text-gray-600">This is your payment receipt. You can safely close this page.</p>
                 </div>
             </motion.div>

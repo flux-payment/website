@@ -173,7 +173,7 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
                                                     </span>
                                                 </div>
                                             )}
-                                            {(transaction.flux_fee != null || settlementData?.deductions?.flux_fee != null) && (
+                                            {((settlementData?.deductions?.flux_fee || transaction.flux_fee) > 0) && (
                                                 <div className="flex justify-between text-xs">
                                                     <span className="text-white/40">Flux Fee</span>
                                                     <span className="text-orange-400 font-mono">
@@ -181,7 +181,7 @@ const TransactionDetailsModal = ({ transaction, onClose, role = 'merchant' }) =>
                                                     </span>
                                                 </div>
                                             )}
-                                            {(transaction.gst != null || settlementData?.deductions?.gst != null) && (
+                                            {((settlementData?.deductions?.gst || transaction.gst) > 0) && (
                                                 <div className="flex justify-between text-xs">
                                                     <span className="text-white/40">GST (18%)</span>
                                                     <span className="text-purple-400 font-mono">
