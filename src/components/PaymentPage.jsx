@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
-import html2canvas from 'html2canvas';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Store, Coffee, Utensils, Cake, Wine, ShoppingBag,
@@ -114,7 +113,6 @@ export default function PaymentPage() {
     const [txnDetails, setTxnDetails] = useState(null);
     const [copied, setCopied] = useState(false);
     const [sharing, setSharing] = useState(false);
-    const receiptRef = useRef(null);
 
     // Validation states
     const [amountError, setAmountError] = useState('');
@@ -386,30 +384,230 @@ export default function PaymentPage() {
         </motion.div>
     );
 
+    const generateReceiptCanvas = () => {
+        const scale = 2;
+        const W = 420 * scale;
+        const pad = 32 * scale;
+        const detailRows = [];
+
+        const txnDate = txnDetails?.timestamp
+            ? txnDetails.timestamp.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+            : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+        if (txnDetails?.paymentId) detailRows.push(['Payment ID', txnDetails.paymentId]);
+        if (txnDetails?.orderId) detailRows.push(['Order ID', txnDetails.orderId]);
+        detailRows.push(['Date & Time', txnDate]);
+        if (name) detailRows.push(['Paid By', name]);
+        if (contact) detailRows.push(['Phone', `+91 ${contact}`]);
+        if (description) detailRows.push(['Note', description]);
+        detailRows.push(['Status', '✓ Completed']);
+
+        const rowH = 38 * scale;
+        const headerH = 220 * scale;
+        const detailHeaderH = 30 * scale;
+        const detailPad = 16 * scale;
+        const detailBlockH = detailHeaderH + detailRows.length * rowH + detailPad * 2;
+        const footerH = 50 * scale;
+        const H = headerH + detailBlockH + 24 * scale + footerH + 20 * scale;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // Background
+        ctx.fillStyle = '#0a0a0f';
+        ctx.fillRect(0, 0, W, H);
+
+        // Card background with subtle border
+        const cardX = 12 * scale, cardY = 12 * scale;
+        const cardW = W - 24 * scale, cardH = H - 24 * scale;
+        const r = 24 * scale;
+        ctx.beginPath();
+        ctx.moveTo(cardX + r, cardY);
+        ctx.lineTo(cardX + cardW - r, cardY);
+        ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + r);
+        ctx.lineTo(cardX + cardW, cardY + cardH - r);
+        ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - r, cardY + cardH);
+        ctx.lineTo(cardX + r, cardY + cardH);
+        ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - r);
+        ctx.lineTo(cardX, cardY + r);
+        ctx.quadraticCurveTo(cardX, cardY, cardX + r, cardY);
+        ctx.closePath();
+        ctx.fillStyle = '#18181b';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(34,197,94,0.15)';
+        ctx.lineWidth = 1.5 * scale;
+        ctx.stroke();
+
+        // ---- Header area ----
+        let y = cardY + 36 * scale;
+        const cx = W / 2;
+
+        // Green circle with checkmark
+        const circR = 32 * scale;
+        const grd = ctx.createLinearGradient(cx - circR, y, cx + circR, y + circR * 2);
+        grd.addColorStop(0, '#4ade80');
+        grd.addColorStop(1, '#059669');
+        ctx.beginPath();
+        ctx.arc(cx, y + circR, circR, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+
+        // Checkmark
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3.5 * scale;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx - 14 * scale, y + circR + 2 * scale);
+        ctx.lineTo(cx - 4 * scale, y + circR + 12 * scale);
+        ctx.lineTo(cx + 16 * scale, y + circR - 10 * scale);
+        ctx.stroke();
+
+        y += circR * 2 + 20 * scale;
+
+        // Amount
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${28 * scale}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(`₹${amount}`, cx, y);
+        y += 28 * scale;
+
+        // "paid to Merchant"
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = `${13 * scale}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+        ctx.fillText(`paid to `, cx - ctx.measureText(`paid to ${merchant.merchant_name}`).width / 2 + ctx.measureText('paid to ').width / 2, y);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `600 ${13 * scale}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+        // Actually, let's simplify
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = `${13 * scale}px -apple-system, sans-serif`;
+        const paidText = `paid to ${merchant.merchant_name}`;
+        ctx.fillText(paidText, cx, y);
+        y += 24 * scale;
+
+        // "✓ SUCCESSFUL" badge
+        const badgeText = '✓ SUCCESSFUL';
+        ctx.font = `bold ${11 * scale}px -apple-system, sans-serif`;
+        const badgeW = ctx.measureText(badgeText).width + 20 * scale;
+        const badgeH = 24 * scale;
+        const badgeX = cx - badgeW / 2;
+        const badgeR = badgeH / 2;
+        ctx.beginPath();
+        ctx.moveTo(badgeX + badgeR, y);
+        ctx.lineTo(badgeX + badgeW - badgeR, y);
+        ctx.quadraticCurveTo(badgeX + badgeW, y, badgeX + badgeW, y + badgeR);
+        ctx.quadraticCurveTo(badgeX + badgeW, y + badgeH, badgeX + badgeW - badgeR, y + badgeH);
+        ctx.lineTo(badgeX + badgeR, y + badgeH);
+        ctx.quadraticCurveTo(badgeX, y + badgeH, badgeX, y + badgeR);
+        ctx.quadraticCurveTo(badgeX, y, badgeX + badgeR, y);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(34,197,94,0.1)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(34,197,94,0.25)';
+        ctx.lineWidth = 1 * scale;
+        ctx.stroke();
+        ctx.fillStyle = '#4ade80';
+        ctx.font = `bold ${11 * scale}px -apple-system, sans-serif`;
+        ctx.fillText(badgeText, cx, y + badgeH / 2 + 4 * scale);
+
+        y += badgeH + 20 * scale;
+
+        // ---- Detail Card ----
+        const detX = pad;
+        const detW = W - pad * 2;
+        const detR = 14 * scale;
+        ctx.beginPath();
+        ctx.moveTo(detX + detR, y);
+        ctx.lineTo(detX + detW - detR, y);
+        ctx.quadraticCurveTo(detX + detW, y, detX + detW, y + detR);
+        ctx.lineTo(detX + detW, y + detailBlockH - detR);
+        ctx.quadraticCurveTo(detX + detW, y + detailBlockH, detX + detW - detR, y + detailBlockH);
+        ctx.lineTo(detX + detR, y + detailBlockH);
+        ctx.quadraticCurveTo(detX, y + detailBlockH, detX, y + detailBlockH - detR);
+        ctx.lineTo(detX, y + detR);
+        ctx.quadraticCurveTo(detX, y, detX + detR, y);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 1 * scale;
+        ctx.stroke();
+
+        // "TRANSACTION DETAILS" header
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#6b7280';
+        ctx.font = `bold ${9 * scale}px -apple-system, sans-serif`;
+        ctx.fillText('TRANSACTION DETAILS', detX + detailPad, y + detailPad + 12 * scale);
+
+        let rowY = y + detailPad + detailHeaderH;
+        detailRows.forEach(([label, value], i) => {
+            const ry = rowY + i * rowH;
+            // Separator line
+            if (i > 0) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(detX + detailPad, ry);
+                ctx.lineTo(detX + detW - detailPad, ry);
+                ctx.stroke();
+            }
+
+            // Label
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#6b7280';
+            ctx.font = `500 ${10 * scale}px -apple-system, sans-serif`;
+            ctx.fillText(label.toUpperCase(), detX + detailPad, ry + rowH / 2 + 4 * scale);
+
+            // Value
+            ctx.textAlign = 'right';
+            if (label === 'Status') {
+                ctx.fillStyle = '#4ade80';
+                ctx.font = `600 ${12 * scale}px -apple-system, sans-serif`;
+            } else {
+                ctx.fillStyle = '#e5e7eb';
+                ctx.font = (label === 'Payment ID' || label === 'Order ID')
+                    ? `${10 * scale}px monospace`
+                    : `${12 * scale}px -apple-system, sans-serif`;
+            }
+            ctx.fillText(value, detX + detW - detailPad, ry + rowH / 2 + 4 * scale);
+        });
+
+        y += detailBlockH + 16 * scale;
+
+        // ---- Footer / Watermark ----
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pad, y);
+        ctx.lineTo(W - pad, y);
+        ctx.stroke();
+        y += 20 * scale;
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#4b5563';
+        ctx.font = `${10 * scale}px -apple-system, sans-serif`;
+        ctx.fillText('Powered by Flux • paywithflux.vercel.app', cx, y);
+
+        return canvas;
+    };
+
     const handleShare = async () => {
-        if (!receiptRef.current || sharing) return;
+        if (sharing) return;
         setSharing(true);
 
         try {
-            // Capture the receipt card as an image
-            const canvas = await html2canvas(receiptRef.current, {
-                backgroundColor: '#09090b',
-                scale: 2,
-                useCORS: true,
-                logging: false,
-            });
-
+            const canvas = generateReceiptCanvas();
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
             const file = new File([blob], `flux-receipt-${txnDetails?.paymentId || 'payment'}.png`, { type: 'image/png' });
 
-            // Try Web Share API with file
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({
                     title: 'Payment Receipt - Flux',
                     files: [file],
                 });
             } else {
-                // Fallback: download the image
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -427,17 +625,11 @@ export default function PaymentPage() {
     };
 
     const handleDownload = async () => {
-        if (!receiptRef.current || sharing) return;
+        if (sharing) return;
         setSharing(true);
 
         try {
-            const canvas = await html2canvas(receiptRef.current, {
-                backgroundColor: '#09090b',
-                scale: 2,
-                useCORS: true,
-                logging: false,
-            });
-
+            const canvas = generateReceiptCanvas();
             const url = canvas.toDataURL('image/png');
             const a = document.createElement('a');
             a.href = url;
@@ -453,9 +645,9 @@ export default function PaymentPage() {
     };
 
     const DetailRow = ({ label, value, mono }) => (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <span style={{ fontSize: '11px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>{label}</span>
-            <span style={{ fontSize: mono ? '12px' : '14px', color: '#e5e7eb', textAlign: 'right', maxWidth: '60%', wordBreak: 'break-all', fontFamily: mono ? 'monospace' : 'inherit' }}>{value}</span>
+        <div className="flex justify-between items-center py-2.5 border-b border-white/5 last:border-b-0">
+            <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">{label}</span>
+            <span className={`text-sm text-gray-200 text-right max-w-[60%] break-all ${mono ? 'font-mono text-xs' : ''}`}>{value}</span>
         </div>
     );
 
@@ -469,79 +661,70 @@ export default function PaymentPage() {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 200 }}
-                className="max-w-sm w-full"
+                className="bg-zinc-900/90 backdrop-blur-xl border border-green-500/20 rounded-3xl overflow-hidden max-w-sm w-full shadow-2xl"
             >
-                {/* Capturable Receipt Area */}
-                <div ref={receiptRef} className="bg-zinc-900 rounded-3xl overflow-hidden border border-green-500/20 shadow-2xl" style={{ padding: 0 }}>
-                    {/* Success Header */}
-                    <div className="p-6 pb-5 text-center bg-gradient-to-b from-green-500/10 to-transparent">
-                        <motion.div
-                            initial={{ scale: 0, rotate: -180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                            className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30 ring-4 ring-green-500/20"
-                        >
-                            <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
-                        </motion.div>
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="text-3xl font-header font-bold text-white mb-1"
-                        >
-                            ₹{amount}
-                        </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.35 }}
-                            className="text-gray-400 text-sm"
-                        >
-                            paid to <span className="text-white font-semibold">{merchant.merchant_name}</span>
-                        </motion.p>
-                        <div style={{ textAlign: 'center', marginTop: '12px' }}>
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.4 }}
-                                style={{ display: 'inline-block', padding: '4px 12px', borderRadius: '9999px', backgroundColor: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}
-                            >
-                                <span style={{ color: '#4ade80', fontSize: '12px', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>✓ Successful</span>
-                            </motion.div>
-                        </div>
-                    </div>
-
-                    {/* Transaction Details */}
+                {/* Success Header */}
+                <div className="p-6 pb-5 text-center bg-gradient-to-b from-green-500/10 to-transparent">
                     <motion.div
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                        className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30 ring-4 ring-green-500/20"
+                    >
+                        <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
+                    </motion.div>
+                    <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.45 }}
-                        className="mx-4 mb-4 p-4 bg-black/40 rounded-2xl border border-white/5"
+                        transition={{ delay: 0.3 }}
+                        className="text-3xl font-header font-bold text-white mb-1"
                     >
-                        <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">Transaction Details</p>
-                        {txnDetails?.paymentId && <DetailRow label="Payment ID" value={txnDetails.paymentId} mono />}
-                        {txnDetails?.orderId && <DetailRow label="Order ID" value={txnDetails.orderId} mono />}
-                        <DetailRow label="Date & Time" value={txnDate} />
-                        {name && <DetailRow label="Paid By" value={name} />}
-                        {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
-                        {description && <DetailRow label="Note" value={description} />}
-                        <DetailRow label="Status" value={
-                            <span style={{ color: '#4ade80', fontWeight: 600 }}>✓ Completed</span>
-                        } />
+                        ₹{amount}
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.35 }}
+                        className="text-gray-400 text-sm"
+                    >
+                        paid to <span className="text-white font-semibold">{merchant.merchant_name}</span>
+                    </motion.p>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20"
+                    >
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                        <span className="text-green-400 text-xs font-bold tracking-wider uppercase">Successful</span>
                     </motion.div>
-
-                    {/* Flux Watermark */}
-                    <div className="py-3 text-center border-t border-white/5">
-                        <p className="text-[11px] text-gray-600">Powered by <span className="text-violet-400/60 font-semibold">Flux</span> • paywithflux.vercel.app</p>
-                    </div>
                 </div>
 
-                {/* Action Buttons — outside the capture area */}
+                {/* Transaction Details */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.45 }}
+                    className="mx-4 mb-4 p-4 bg-black/40 rounded-2xl border border-white/5"
+                >
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">Transaction Details</p>
+                    {txnDetails?.paymentId && <DetailRow label="Payment ID" value={txnDetails.paymentId} mono />}
+                    {txnDetails?.orderId && <DetailRow label="Order ID" value={txnDetails.orderId} mono />}
+                    <DetailRow label="Date & Time" value={txnDate} />
+                    {name && <DetailRow label="Paid By" value={name} />}
+                    {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
+                    {description && <DetailRow label="Note" value={description} />}
+                    <DetailRow label="Status" value={
+                        <span className="text-green-400 font-semibold">✓ Completed</span>
+                    } />
+                </motion.div>
+
+                {/* Action Buttons */}
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.55 }}
-                    className="flex gap-3 mt-4"
+                    className="px-4 pb-3 flex gap-3"
                 >
                     <button
                         onClick={handleShare}
@@ -572,7 +755,7 @@ export default function PaymentPage() {
                 </motion.div>
 
                 {/* Footer */}
-                <div className="mt-3 text-center">
+                <div className="px-4 pb-5 text-center">
                     <p className="text-[11px] text-gray-600">This is your payment receipt. You can safely close this page.</p>
                 </div>
             </motion.div>
