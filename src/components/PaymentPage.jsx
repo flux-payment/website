@@ -406,10 +406,10 @@ export default function PaymentPage() {
         if (contact) detailRows.push(['Phone', `+91 ${contact}`]);
         // Payment method
         if (txnDetails?.method === 'upi' && txnDetails?.vpa) {
-            detailRows.push(['Method', `UPI • ${txnDetails.vpa}`]);
+            detailRows.push(['Method', 'UPI', txnDetails.vpa]);
         } else if (txnDetails?.method === 'card' && txnDetails?.card) {
             const c = txnDetails.card;
-            detailRows.push(['Method', `${c.network || 'Card'} •••• ${c.last4}`]);
+            detailRows.push(['Method', c.network || 'Card', `•••• ${c.last4}`]);
         } else if (txnDetails?.method === 'netbanking') {
             detailRows.push(['Method', 'Net Banking']);
         } else if (txnDetails?.method === 'wallet') {
@@ -560,7 +560,7 @@ export default function PaymentPage() {
         ctx.fillText('TRANSACTION DETAILS', detX + detailPad, y + detailPad + 12 * scale);
 
         let rowY = y + detailPad + detailHeaderH;
-        detailRows.forEach(([label, value], i) => {
+        detailRows.forEach(([label, value, subValue], i) => {
             const ry = rowY + i * rowH;
             // Separator line
             if (i > 0) {
@@ -583,13 +583,22 @@ export default function PaymentPage() {
             if (label === 'Status') {
                 ctx.fillStyle = '#4ade80';
                 ctx.font = `600 ${12 * scale}px -apple-system, sans-serif`;
+                ctx.fillText(value, detX + detW - detailPad, ry + rowH / 2 + 4 * scale);
+            } else if (subValue) {
+                // Two-line: type bold, detail smaller below
+                ctx.fillStyle = '#e5e7eb';
+                ctx.font = `600 ${12 * scale}px -apple-system, sans-serif`;
+                ctx.fillText(value, detX + detW - detailPad, ry + rowH / 2 - 2 * scale);
+                ctx.fillStyle = '#6b7280';
+                ctx.font = `${9 * scale}px -apple-system, sans-serif`;
+                ctx.fillText(subValue, detX + detW - detailPad, ry + rowH / 2 + 12 * scale);
             } else {
                 ctx.fillStyle = '#e5e7eb';
                 ctx.font = (label === 'Payment ID' || label === 'Order ID')
                     ? `${10 * scale}px monospace`
                     : `${12 * scale}px -apple-system, sans-serif`;
+                ctx.fillText(value, detX + detW - detailPad, ry + rowH / 2 + 4 * scale);
             }
-            ctx.fillText(value, detX + detW - detailPad, ry + rowH / 2 + 4 * scale);
         });
 
         y += detailBlockH + 16 * scale;
@@ -777,10 +786,20 @@ export default function PaymentPage() {
                     {name && <DetailRow label="Paid By" value={name} />}
                     {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
                     {txnDetails?.method === 'upi' && txnDetails?.vpa && (
-                        <DetailRow label="Method" value={`UPI • ${txnDetails.vpa}`} />
+                        <DetailRow label="Method" value={
+                            <span className="flex flex-col items-end">
+                                <span className="text-gray-200 font-semibold">UPI</span>
+                                <span className="text-gray-500 text-xs">{txnDetails.vpa}</span>
+                            </span>
+                        } />
                     )}
                     {txnDetails?.method === 'card' && txnDetails?.card && (
-                        <DetailRow label="Method" value={`${txnDetails.card.network || 'Card'} •••• ${txnDetails.card.last4}`} />
+                        <DetailRow label="Method" value={
+                            <span className="flex flex-col items-end">
+                                <span className="text-gray-200 font-semibold">{txnDetails.card.network || 'Card'}</span>
+                                <span className="text-gray-500 text-xs">•••• {txnDetails.card.last4}</span>
+                            </span>
+                        } />
                     )}
                     {txnDetails?.method && txnDetails.method !== 'upi' && txnDetails.method !== 'card' && (
                         <DetailRow label="Method" value={txnDetails.method === 'netbanking' ? 'Net Banking' : txnDetails.method === 'wallet' ? 'Wallet' : txnDetails.method.toUpperCase()} />
