@@ -325,16 +325,20 @@ export default function PaymentPage() {
                 },
                 handler: async function (response) {
                     try {
-                        await axios.post(`${backendUrl}/pay/process`, {
+                        const processRes = await axios.post(`${backendUrl}/pay/process`, {
                             payment_id: response.razorpay_payment_id,
                             merchant_id: merchant.merchant_id,
                             amount: payAmount,
                             description: description || "Web QR Payment"
                         });
+                        const methodData = processRes.data || {};
                         setTxnDetails({
                             paymentId: response.razorpay_payment_id,
                             orderId: response.razorpay_order_id || orderId,
                             timestamp: new Date(),
+                            method: methodData.method || '',
+                            vpa: methodData.vpa || '',
+                            card: methodData.card || null,
                         });
                         setSuccess(true);
                     } catch (e) {
@@ -400,6 +404,19 @@ export default function PaymentPage() {
         detailRows.push(['Date & Time', txnDate]);
         if (name) detailRows.push(['Paid By', name]);
         if (contact) detailRows.push(['Phone', `+91 ${contact}`]);
+        // Payment method
+        if (txnDetails?.method === 'upi' && txnDetails?.vpa) {
+            detailRows.push(['Method', `UPI • ${txnDetails.vpa}`]);
+        } else if (txnDetails?.method === 'card' && txnDetails?.card) {
+            const c = txnDetails.card;
+            detailRows.push(['Method', `${c.network || 'Card'} •••• ${c.last4}`]);
+        } else if (txnDetails?.method === 'netbanking') {
+            detailRows.push(['Method', 'Net Banking']);
+        } else if (txnDetails?.method === 'wallet') {
+            detailRows.push(['Method', 'Wallet']);
+        } else if (txnDetails?.method) {
+            detailRows.push(['Method', txnDetails.method.toUpperCase()]);
+        }
         if (description) detailRows.push(['Note', description]);
         detailRows.push(['Status', '✓ Completed']);
 
@@ -657,6 +674,9 @@ export default function PaymentPage() {
             `To: ${merchant.merchant_name}`,
             name ? `From: ${name}` : null,
             contact ? `Phone: +91 ${contact}` : null,
+            txnDetails?.method === 'upi' && txnDetails?.vpa ? `Method: UPI • ${txnDetails.vpa}` :
+                txnDetails?.method === 'card' && txnDetails?.card ? `Method: ${txnDetails.card.network || 'Card'} •••• ${txnDetails.card.last4}` :
+                    txnDetails?.method ? `Method: ${txnDetails.method.toUpperCase()}` : null,
             `Date: ${txnDate}`,
             description ? `Note: ${description}` : null,
             ``,
@@ -756,6 +776,15 @@ export default function PaymentPage() {
                     <DetailRow label="Date & Time" value={txnDate} />
                     {name && <DetailRow label="Paid By" value={name} />}
                     {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
+                    {txnDetails?.method === 'upi' && txnDetails?.vpa && (
+                        <DetailRow label="Method" value={`UPI • ${txnDetails.vpa}`} />
+                    )}
+                    {txnDetails?.method === 'card' && txnDetails?.card && (
+                        <DetailRow label="Method" value={`${txnDetails.card.network || 'Card'} •••• ${txnDetails.card.last4}`} />
+                    )}
+                    {txnDetails?.method && txnDetails.method !== 'upi' && txnDetails.method !== 'card' && (
+                        <DetailRow label="Method" value={txnDetails.method === 'netbanking' ? 'Net Banking' : txnDetails.method === 'wallet' ? 'Wallet' : txnDetails.method.toUpperCase()} />
+                    )}
                     {description && <DetailRow label="Note" value={description} />}
                     <DetailRow label="Status" value={
                         <span className="text-green-400 font-semibold">✓ Completed</span>
