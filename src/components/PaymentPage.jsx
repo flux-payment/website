@@ -453,9 +453,9 @@ export default function PaymentPage() {
     };
 
     const DetailRow = ({ label, value, mono }) => (
-        <div className="flex justify-between items-start py-2.5 border-b border-white/5 last:border-b-0">
-            <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">{label}</span>
-            <span className={`text-sm text-gray-200 text-right max-w-[60%] break-all ${mono ? 'font-mono text-xs' : ''}`}>{value}</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <span style={{ fontSize: '11px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>{label}</span>
+            <span style={{ fontSize: mono ? '12px' : '14px', color: '#e5e7eb', textAlign: 'right', maxWidth: '60%', wordBreak: 'break-all', fontFamily: mono ? 'monospace' : 'inherit' }}>{value}</span>
         </div>
     );
 
@@ -499,15 +499,16 @@ export default function PaymentPage() {
                         >
                             paid to <span className="text-white font-semibold">{merchant.merchant_name}</span>
                         </motion.p>
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.4 }}
-                            className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20"
-                        >
-                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                            <span className="text-green-400 text-xs font-bold tracking-wider uppercase">Successful</span>
-                        </motion.div>
+                        <div style={{ textAlign: 'center', marginTop: '12px' }}>
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.4 }}
+                                style={{ display: 'inline-block', padding: '4px 12px', borderRadius: '9999px', backgroundColor: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}
+                            >
+                                <span style={{ color: '#4ade80', fontSize: '12px', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>✓ Successful</span>
+                            </motion.div>
+                        </div>
                     </div>
 
                     {/* Transaction Details */}
@@ -525,9 +526,7 @@ export default function PaymentPage() {
                         {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
                         {description && <DetailRow label="Note" value={description} />}
                         <DetailRow label="Status" value={
-                            <span className="text-green-400 font-semibold flex items-center gap-1">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Completed
-                            </span>
+                            <span style={{ color: '#4ade80', fontWeight: 600 }}>✓ Completed</span>
                         } />
                     </motion.div>
 
@@ -549,12 +548,8 @@ export default function PaymentPage() {
                         disabled={sharing}
                         className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600/20 border border-violet-500/30 text-violet-300 hover:bg-violet-600/30 transition-all text-sm font-semibold disabled:opacity-50"
                     >
-                        {sharing ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                            <Share2 className="w-4 h-4" />
-                        )}
-                        {sharing ? 'Capturing...' : 'Share Receipt'}
+                        {sharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+                        Share Receipt
                     </button>
                     <button
                         onClick={handleDownload}
