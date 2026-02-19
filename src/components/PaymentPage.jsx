@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -111,8 +111,9 @@ export default function PaymentPage() {
     const [success, setSuccess] = useState(false);
     const [isAmountLocked, setIsAmountLocked] = useState(false);
     const [txnDetails, setTxnDetails] = useState(null);
-    const [copied, setCopied] = useState(false);
-    const [sharing, setSharing] = useState(false);
+    const copiedRef = useRef(false);
+    const sharingRef = useRef(false);
+    const copyBtnRef = useRef(null);
 
     // Validation states
     const [amountError, setAmountError] = useState('');
@@ -465,14 +466,14 @@ export default function PaymentPage() {
         ctx.lineTo(cx + 16 * scale, y + circR - 10 * scale);
         ctx.stroke();
 
-        y += circR * 2 + 20 * scale;
+        y += circR * 2 + 30 * scale;
 
         // Amount
         ctx.fillStyle = '#ffffff';
         ctx.font = `bold ${28 * scale}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(`₹${amount}`, cx, y);
-        y += 28 * scale;
+        y += 32 * scale;
 
         // "paid to Merchant"
         ctx.fillStyle = '#9ca3af';
@@ -594,8 +595,8 @@ export default function PaymentPage() {
     };
 
     const handleShare = async () => {
-        if (sharing) return;
-        setSharing(true);
+        if (sharingRef.current) return;
+        sharingRef.current = true;
 
         try {
             const canvas = generateReceiptCanvas();
@@ -620,13 +621,13 @@ export default function PaymentPage() {
         } catch (e) {
             if (e.name !== 'AbortError') console.error('Share failed:', e);
         } finally {
-            setSharing(false);
+            sharingRef.current = false;
         }
     };
 
     const handleDownload = async () => {
-        if (sharing) return;
-        setSharing(true);
+        if (sharingRef.current) return;
+        sharingRef.current = true;
 
         try {
             const canvas = generateReceiptCanvas();
@@ -640,7 +641,49 @@ export default function PaymentPage() {
         } catch (e) {
             console.error('Download failed:', e);
         } finally {
-            setSharing(false);
+            sharingRef.current = false;
+        }
+    };
+
+    const handleCopy = async () => {
+        const txnDate = txnDetails?.timestamp
+            ? txnDetails.timestamp.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+            : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+        const receiptText = [
+            `✅ Payment Successful`,
+            ``,
+            `Amount: ₹${amount}`,
+            `To: ${merchant.merchant_name}`,
+            name ? `From: ${name}` : null,
+            contact ? `Phone: +91 ${contact}` : null,
+            `Date: ${txnDate}`,
+            description ? `Note: ${description}` : null,
+            ``,
+            `Payment ID: ${txnDetails?.paymentId || 'N/A'}`,
+            `Order ID: ${txnDetails?.orderId || 'N/A'}`,
+            `Status: Completed`,
+            ``,
+            `Powered by Flux • paywithflux.vercel.app`,
+        ].filter(Boolean).join('\n');
+
+        try {
+            await navigator.clipboard.writeText(receiptText);
+            // Show check icon briefly via DOM (no state change = no re-render)
+            if (copyBtnRef.current) {
+                copyBtnRef.current.dataset.copied = 'true';
+                copyBtnRef.current.querySelector('.copy-icon')?.classList.add('hidden');
+                copyBtnRef.current.querySelector('.check-icon')?.classList.remove('hidden');
+                setTimeout(() => {
+                    if (copyBtnRef.current) {
+                        copyBtnRef.current.dataset.copied = 'false';
+                        copyBtnRef.current.querySelector('.copy-icon')?.classList.remove('hidden');
+                        copyBtnRef.current.querySelector('.check-icon')?.classList.add('hidden');
+                    }
+                }, 2000);
+            }
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -719,40 +762,29 @@ export default function PaymentPage() {
                     } />
                 </motion.div>
 
-                {/* Action Buttons */}
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.55 }}
-                    className="px-4 pb-3 flex gap-3"
-                >
+                <div className="px-4 pb-3 flex gap-3">
                     <button
                         onClick={handleShare}
-                        disabled={sharing}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600/20 border border-violet-500/30 text-violet-300 hover:bg-violet-600/30 transition-all text-sm font-semibold disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600/20 border border-violet-500/30 text-violet-300 hover:bg-violet-600/30 transition-all text-sm font-semibold"
                     >
-                        {sharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+                        <Share2 className="w-4 h-4" />
                         Share Receipt
                     </button>
                     <button
                         onClick={handleDownload}
-                        disabled={sharing}
-                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all text-sm font-medium disabled:opacity-50"
+                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all text-sm font-medium"
                     >
                         <Download className="w-4 h-4" />
                     </button>
                     <button
-                        onClick={async () => {
-                            const id = txnDetails?.paymentId || '';
-                            await navigator.clipboard.writeText(id);
-                            setCopied(true);
-                            setTimeout(() => setCopied(false), 2000);
-                        }}
+                        ref={copyBtnRef}
+                        onClick={handleCopy}
                         className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all text-sm font-medium"
                     >
-                        {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                        <Copy className="w-4 h-4 copy-icon" />
+                        <Check className="w-4 h-4 text-green-400 check-icon hidden" />
                     </button>
-                </motion.div>
+                </div>
 
                 {/* Footer */}
                 <div className="px-4 pb-5 text-center">
