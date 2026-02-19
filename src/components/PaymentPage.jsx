@@ -5,7 +5,7 @@ import {
     Store, Coffee, Utensils, Cake, Wine, ShoppingBag,
     Shirt, Scissors, Dumbbell, Car, Book, Activity, Plane,
     Smartphone, Gamepad2, CreditCard, Briefcase, Star, Zap,
-    CheckCircle2, AlertCircle, Loader2
+    CheckCircle2, AlertCircle, Loader2, Share2, Copy, Check
 } from 'lucide-react';
 
 const getSmartAvatarProps = (name) => {
@@ -110,6 +110,8 @@ export default function PaymentPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [isAmountLocked, setIsAmountLocked] = useState(false);
+    const [txnDetails, setTxnDetails] = useState(null);
+    const [copied, setCopied] = useState(false);
 
     // Validation states
     const [amountError, setAmountError] = useState('');
@@ -327,6 +329,11 @@ export default function PaymentPage() {
                             amount: payAmount,
                             description: description || "Web QR Payment"
                         });
+                        setTxnDetails({
+                            paymentId: response.razorpay_payment_id,
+                            orderId: response.razorpay_order_id || orderId,
+                            timestamp: new Date(),
+                        });
                         setSuccess(true);
                     } catch (e) {
                         alert("Payment verification failed, but your money is safe.");
@@ -376,52 +383,159 @@ export default function PaymentPage() {
         </motion.div>
     );
 
-    const SuccessState = () => (
-        <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 200 }}
-            className="bg-zinc-900/90 backdrop-blur-xl border border-green-500/30 rounded-3xl p-8 text-center max-w-sm w-full shadow-2xl"
-        >
-            <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                className="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30 ring-4 ring-green-500/20"
-            >
-                <CheckCircle2 className="w-12 h-12 text-white" strokeWidth={2.5} />
-            </motion.div>
-            <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-3xl font-header font-bold text-white mb-2"
-            >
-                Paid ₹{amount}
-            </motion.h1>
-            <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="text-gray-400 mb-8"
-            >
-                to {merchant.merchant_name}
-            </motion.p>
-            <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="p-4 bg-black/40 rounded-xl mb-6 border border-white/5"
-            >
-                <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Transaction Status</p>
-                <p className="text-green-400 font-bold flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    SUCCESSFUL
-                </p>
-            </motion.div>
-            <p className="text-xs text-gray-500">You can safely close this window.</p>
-        </motion.div>
+    const handleShare = async () => {
+        const txnDate = txnDetails?.timestamp ? txnDetails.timestamp.toLocaleString('en-IN', {
+            dateStyle: 'medium', timeStyle: 'short'
+        }) : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+        const receiptText = [
+            `✅ Payment Successful`,
+            ``,
+            `Amount: ₹${amount}`,
+            `To: ${merchant.merchant_name}`,
+            name ? `From: ${name}` : null,
+            contact ? `Phone: +91 ${contact}` : null,
+            `Date: ${txnDate}`,
+            description ? `Note: ${description}` : null,
+            ``,
+            `Payment ID: ${txnDetails?.paymentId || 'N/A'}`,
+            `Order ID: ${txnDetails?.orderId || 'N/A'}`,
+            ``,
+            `Powered by Flux • paywithflux.vercel.app`,
+        ].filter(Boolean).join('\n');
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Payment Receipt - Flux',
+                    text: receiptText,
+                });
+            } catch (e) {
+                if (e.name !== 'AbortError') console.error(e);
+            }
+        } else {
+            // Fallback: copy to clipboard
+            try {
+                await navigator.clipboard.writeText(receiptText);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
+
+    const DetailRow = ({ label, value, mono }) => (
+        <div className="flex justify-between items-start py-2.5 border-b border-white/5 last:border-b-0">
+            <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">{label}</span>
+            <span className={`text-sm text-gray-200 text-right max-w-[60%] break-all ${mono ? 'font-mono text-xs' : ''}`}>{value}</span>
+        </div>
     );
+
+    const SuccessState = () => {
+        const txnDate = txnDetails?.timestamp ? txnDetails.timestamp.toLocaleString('en-IN', {
+            dateStyle: 'medium', timeStyle: 'short'
+        }) : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+        return (
+            <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200 }}
+                className="bg-zinc-900/90 backdrop-blur-xl border border-green-500/20 rounded-3xl overflow-hidden max-w-sm w-full shadow-2xl"
+            >
+                {/* Success Header */}
+                <div className="p-6 pb-5 text-center bg-gradient-to-b from-green-500/10 to-transparent">
+                    <motion.div
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                        className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30 ring-4 ring-green-500/20"
+                    >
+                        <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
+                    </motion.div>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-3xl font-header font-bold text-white mb-1"
+                    >
+                        ₹{amount}
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.35 }}
+                        className="text-gray-400 text-sm"
+                    >
+                        paid to <span className="text-white font-semibold">{merchant.merchant_name}</span>
+                    </motion.p>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20"
+                    >
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                        <span className="text-green-400 text-xs font-bold tracking-wider uppercase">Successful</span>
+                    </motion.div>
+                </div>
+
+                {/* Transaction Details */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.45 }}
+                    className="mx-4 mb-4 p-4 bg-black/40 rounded-2xl border border-white/5"
+                >
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">Transaction Details</p>
+                    {txnDetails?.paymentId && <DetailRow label="Payment ID" value={txnDetails.paymentId} mono />}
+                    {txnDetails?.orderId && <DetailRow label="Order ID" value={txnDetails.orderId} mono />}
+                    <DetailRow label="Date & Time" value={txnDate} />
+                    {name && <DetailRow label="Paid By" value={name} />}
+                    {contact && <DetailRow label="Phone" value={`+91 ${contact}`} />}
+                    {description && <DetailRow label="Note" value={description} />}
+                    <DetailRow label="Status" value={
+                        <span className="text-green-400 font-semibold flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+                        </span>
+                    } />
+                </motion.div>
+
+                {/* Action Buttons */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.55 }}
+                    className="px-4 pb-4 flex gap-3"
+                >
+                    <button
+                        onClick={handleShare}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600/20 border border-violet-500/30 text-violet-300 hover:bg-violet-600/30 transition-all text-sm font-semibold"
+                    >
+                        <Share2 className="w-4 h-4" />
+                        Share Receipt
+                    </button>
+                    <button
+                        onClick={async () => {
+                            const id = txnDetails?.paymentId || '';
+                            await navigator.clipboard.writeText(id);
+                            setCopied(true);
+                            setTimeout(() => setCopied(false), 2000);
+                        }}
+                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all text-sm font-medium"
+                    >
+                        {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                </motion.div>
+
+                {/* Footer */}
+                <div className="px-4 pb-5 text-center">
+                    <p className="text-[11px] text-gray-600">This is your payment receipt. You can safely close this page.</p>
+                </div>
+            </motion.div>
+        );
+    };
 
     const isFormValid = !amountError && !contactError && amount;
 
