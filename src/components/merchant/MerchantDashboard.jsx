@@ -63,8 +63,10 @@ const MerchantDashboard = () => {
             let amountInPaise = null;
             if (includeAmount && amount) {
                 const baseAmount = parseFloat(amount);
-                // Apply markup percentage
-                const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
+                // Pass-through: customer pays so merchant receives exactly baseAmount after fee
+                const finalAmount = percentageMarkup > 0
+                    ? baseAmount / (1 - percentageMarkup / 100)
+                    : baseAmount;
                 amountInPaise = Math.round(finalAmount * 100);
             }
             const data = await merchantApi.getQR(merchantId, amountInPaise);
@@ -106,7 +108,9 @@ const MerchantDashboard = () => {
         let amountParam = '';
         if (includeAmount && amount) {
             const baseAmount = parseFloat(amount);
-            const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
+            const finalAmount = percentageMarkup > 0
+                ? baseAmount / (1 - percentageMarkup / 100)
+                : baseAmount;
             amountParam = `&amount=${Math.round(finalAmount * 100)}`;
         }
         return `${baseUrl}/pay?m=${merchantCode}${amountParam}`;
@@ -191,7 +195,9 @@ const MerchantDashboard = () => {
                 let displayAmount = amount;
                 if (includeAmount && amount) {
                     const baseAmount = parseFloat(amount);
-                    const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
+                    const finalAmount = percentageMarkup > 0
+                        ? baseAmount / (1 - percentageMarkup / 100)
+                        : baseAmount;
                     amountInPaise = Math.round(finalAmount * 100);
                     displayAmount = finalAmount.toFixed(2);
                 }
@@ -236,8 +242,10 @@ const MerchantDashboard = () => {
             let amountParam = '';
             if (includeAmount && amount) {
                 const baseAmount = parseFloat(amount);
-                const finalAmount = baseAmount + (baseAmount * percentageMarkup / 100);
-                amountParam = `&a=${Math.round(finalAmount * 100)}`;
+                const finalAmount = percentageMarkup > 0
+                    ? baseAmount / (1 - percentageMarkup / 100)
+                    : baseAmount;
+                amountParam = `&amount=${Math.round(finalAmount * 100)}`;
             }
             const shortUrl = `${import.meta.env.VITE_FRONTEND_URL}/pay?m=${merchantCode}${amountParam}`;
 
@@ -363,13 +371,16 @@ const MerchantDashboard = () => {
                                 {/* Percentage Markup Section */}
                                 {amount && (
                                     <div className="mt-4 space-y-3">
-                                        <label className="text-xs text-gray-400 font-semibold uppercase tracking-wide">
-                                            Add Markup (Optional)
-                                        </label>
+                                        <div>
+                                            <label className="text-xs text-gray-400 font-semibold uppercase tracking-wide">
+                                                Pass-Through Fee (Optional)
+                                            </label>
+                                            <p className="text-xs text-gray-600 mt-0.5">Customer pays extra so you receive exactly what you entered</p>
+                                        </div>
 
                                         {/* Quick Select Buttons */}
                                         <div className="flex gap-2">
-                                            {[3, 5, 10, 18].map((percent) => (
+                                            {[2, 3, 6, 18].map((percent) => (
                                                 <button
                                                     key={percent}
                                                     onClick={() => {
@@ -416,23 +427,28 @@ const MerchantDashboard = () => {
                                         </div>
 
                                         {/* Amount Breakdown */}
-                                        {percentageMarkup > 0 && (
-                                            <div className="p-3 bg-white/5 rounded-lg space-y-1 text-sm">
-                                                <div className="flex justify-between text-gray-400">
-                                                    <span>Base Amount:</span>
-                                                    <span>₹{parseFloat(amount).toFixed(2)}</span>
+                                        {percentageMarkup > 0 && (() => {
+                                            const base = parseFloat(amount) || 0;
+                                            const customerPays = base / (1 - percentageMarkup / 100);
+                                            const fee = customerPays - base;
+                                            return (
+                                                <div className="p-3 bg-white/5 rounded-lg space-y-1 text-sm">
+                                                    <div className="flex justify-between text-gray-400">
+                                                        <span>You receive:</span>
+                                                        <span>₹{base.toFixed(2)}</span>
+                                                    </div>
+                                                    <div className="flex justify-between text-blue-400">
+                                                        <span>Fee ({percentageMarkup}%):</span>
+                                                        <span>₹{fee.toFixed(2)}</span>
+                                                    </div>
+                                                    <div className="h-px bg-white/10 my-1" />
+                                                    <div className="flex justify-between text-white font-bold">
+                                                        <span>Customer pays:</span>
+                                                        <span>₹{customerPays.toFixed(2)}</span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex justify-between text-blue-400">
-                                                    <span>Markup ({percentageMarkup}%):</span>
-                                                    <span>₹{(parseFloat(amount) * percentageMarkup / 100).toFixed(2)}</span>
-                                                </div>
-                                                <div className="h-px bg-white/10 my-1" />
-                                                <div className="flex justify-between text-white font-bold">
-                                                    <span>Final Amount:</span>
-                                                    <span>₹{(parseFloat(amount) + (parseFloat(amount) * percentageMarkup / 100)).toFixed(2)}</span>
-                                                </div>
-                                            </div>
-                                        )}
+                                            );
+                                        })()}
                                     </div>
                                 )}
                             </>
