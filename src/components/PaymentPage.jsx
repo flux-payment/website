@@ -106,6 +106,7 @@ export default function PaymentPage() {
     const [amount, setAmount] = useState('');
     const [contact, setContact] = useState('');
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     const [description, setDescription] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
@@ -301,7 +302,8 @@ export default function PaymentPage() {
                     merchant_id: merchant.merchant_id,
                     user_name: name || "Guest",
                     contact: contact,
-                    description: description || null
+                    description: description || null,
+                    customer_email: email || null
                 }
             });
 
@@ -316,12 +318,14 @@ export default function PaymentPage() {
                 order_id: orderId, // Required for netbanking and other payment methods
                 prefill: {
                     contact: contact,
-                    name: name
+                    name: name,
+                    email: email || undefined
                 },
                 notes: {
                     type: "merchant_pay",
                     merchant_id: merchant.merchant_id,
-                    user_name: name || "Guest"
+                    user_name: name || "Guest",
+                    customer_email: email || null
                 },
                 handler: async function (response) {
                     try {
@@ -329,7 +333,8 @@ export default function PaymentPage() {
                             payment_id: response.razorpay_payment_id,
                             merchant_id: merchant.merchant_id,
                             amount: payAmount,
-                            description: description || "Web QR Payment"
+                            description: description || "Web QR Payment",
+                            customer_email: email || null
                         });
                         const methodData = processRes.data || {};
                         setTxnDetails({
@@ -1058,6 +1063,24 @@ export default function PaymentPage() {
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
                                             placeholder="John Doe"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:bg-white/10 transition-all text-sm"
+                                        />
+                                    </motion.div>
+
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.55 }}
+                                        className="space-y-2"
+                                    >
+                                        <label className="text-[10px] text-gray-500 uppercase ml-3 font-bold tracking-widest">
+                                            Email <span className="text-gray-700 normal-case tracking-normal font-normal">(Optional — for invoice)</span>
+                                        </label>
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            placeholder="you@example.com"
                                             className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:bg-white/10 transition-all text-sm"
                                         />
                                     </motion.div>
